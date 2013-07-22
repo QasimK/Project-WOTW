@@ -1,0 +1,5 @@
+The purpose of this program "wotw game map" is to draw the game map out.
+The data is provided by the server (see src/../game/views.py) into wotw_other/game_map.txt
+
+Processing - viewgamemap:
+	Put game_map.txt into the data folder.

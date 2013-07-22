@@ -1,0 +1,14 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>You runaway from your fight!</h2>
+	<p>
+		You successfully managed to runaway from your fight.
+	</p>
+	<p>
+		{% action_link "generic-fight-return" "Go back to where you were." %}
+	</p>
+
+{% endblock %}

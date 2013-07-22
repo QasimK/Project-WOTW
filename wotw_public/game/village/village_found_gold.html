@@ -1,0 +1,24 @@
+{% extends "game/game_base.html" %}
+
+{% block page_content %}
+	<h2>As you looked around the village...</h2>
+	{% if gold < 10 %}
+		<p>
+			As you walk along a street you notice a glimmer on the floor.
+			You walk towards it, and incredulously you cannot believe it is
+			actually gold coins.
+			You pick them up and count that there are <strong>{{ gold }} coin{{ gold|pluralize}}</strong>.
+		</p>
+	{% endif %}
+	
+	{% if gold >= 10 %}
+		<p>
+			As you walk along a street you notice a pile of gold coins in the floor.
+			You walk upto it and pick them up to find that there are <strong>{{ gold }} coins</strong>.
+		</p>
+	{% endif %}
+	<p>
+		{% action_link "village-return-from-found-gold" "Do you want to return to the village centre?" %}
+	</p>
+	
+{% endblock %}

@@ -1,0 +1,143 @@
+a_generic_purchase_item
+Views Allowed on Exit:
+generic-shopping
+
+a_generic_purchase_item
+Views Required:
+generic-shopping
+
+a_generic_fight_attack
+Views Allowed on Exit:
+generic-fighting
+generic-fight-win
+generic-fight-lose
+
+a_generic_fight_attack
+Views Required:
+generic-fighting
+
+a_generic_fight_runaway
+Views Allowed on Exit:
+generic-fight-runaway
+
+a_generic_fight_runaway
+Views Required:
+generic-fighting
+
+a_generic_fight_return
+Views Allowed on Exit:
+*
+
+a_generic_fight_return
+Views Required:
+generic-fight-runaway
+generic-fight-loot
+
+a_generic_fight_goto_loot
+Views Allowed on Exit:
+generic-fight-loot
+
+a_generic_fight_goto_loot
+Views Required:
+generic-fight-win
+
+a_generic_fight_loot_item
+Views Allowed on Exit:
+generic-fight-loot
+
+a_generic_fight_loot_item
+Views Required:
+generic-fight-loot
+
+a_generic_leave_shop
+Views Allowed on Exit:
+*
+
+a_generic_leave_shop
+Views Required:
+generic-shopping
+
+a_generic_resurrect
+Views Allowed on Exit:
+generic-resurrected
+
+a_generic_resurrect
+Views Required:
+generic-fight-lose
+
+a_generic_resurrected_return
+Views Allowed on Exit:
+*
+
+a_generic_resurrected_return
+Views Required:
+generic-resurrected
+
+a_inventory_drop_item
+Views Allowed on Exit:
+*
+
+a_inventory_drop_item
+Views Required:
+*
+
+a_village_explore
+Views Allowed on Exit:
+village-found-gold
+village-explore-nothing
+generic-fighting
+
+a_village_explore
+Views Required:
+village-in
+village-explore-nothing
+village-in-market
+
+a_village_return
+Views Allowed on Exit:
+village-in
+
+a_village_return
+Views Required:
+village-explore-nothing
+
+a_village_return_from_found_gold
+Views Allowed on Exit:
+village-in
+
+a_village_return_from_found_gold
+Views Required:
+village-found-gold
+
+a_village_goto_general_shop
+Views Allowed on Exit:
+generic-shopping
+
+a_village_goto_general_shop
+Views Required:
+village-in-market
+
+a_village_goto_herb_shop
+Views Allowed on Exit:
+generic-shopping
+
+a_village_goto_herb_shop
+Views Required:
+village-in-market
+
+a_village_goto_market
+Views Allowed on Exit:
+village-in-market
+
+a_village_goto_market
+Views Required:
+village-in
+
+a_village_leave_market
+Views Allowed on Exit:
+village-in
+
+a_village_leave_market
+Views Required:
+village-in-market
+

@@ -1,0 +1,14 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>Resurrection!</h2>
+	<p>
+		You have been resurrected but the cost was half of your gold.
+	</p>
+	<p>
+		{% action_link "generic-resurrected-return" "Return to where you were before you died." %}
+	</p>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>You have been defeated by {{ fight.monster_info.name }}!</h2>
+	<p>
+	{% if char_attack == "0" %}
+		You feel weak but the {{ fight.monster_info.name }} looms over you.
+		In your last ditch effort, you attack.
+		You miss completely and you know it is over.
+	{% else %}
+		You attacked the monster for {{ char_attack }} damage but it was not enough!
+	{% endif %}
+	</p>
+	<p>The monster delivered the final killing blow dealing {{ mons_attack }} damage</p>
+	<p>
+		{% action_link "generic-resurrect" "Demand Resurrection." %}
+	</p>
+
+{% endblock %}

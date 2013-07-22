@@ -1,0 +1,14 @@
+{% extends "game/game_base.html" %}
+
+{% block page_content %}
+	<h2>You are in the village</h2>
+	<p>There is nothing much happening in the village right now.</p>
+	<p>
+		{% action_link "village-goto-market" "Visit the village marketplace" %}
+	</p>
+	<p>
+		{% action_link "village-explore" "Would you rather sneak around the village exploring?" %}
+	</p>	
+	
+{% endblock %}
+

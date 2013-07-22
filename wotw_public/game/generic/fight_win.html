@@ -1,0 +1,15 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>You have defeated {{ fight.monster_info.name }}!</h2>
+	<p>
+		You defeated the {{fight.monster_info.name}} with your killing
+		blow which dealt {{ char_attack }} damage.
+	</p>
+	<p>
+		{% action_link "generic-fight-goto-loot" "See what you can loot off the corpse." %}
+	</p>
+
+{% endblock %}

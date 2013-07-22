@@ -1,0 +1,14 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>Title</h2>
+	<p>
+		Just an example showing off some features of WOTW template pages.
+	</p>
+	<p>
+		{% action_link "action-name" "Text to display." %}
+	</p>
+
+{% endblock %}
