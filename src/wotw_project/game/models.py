@@ -105,9 +105,9 @@ class Character(models.Model):
                                       choices=INVENTORY_MODE_CHOICES,
                                       default=INV_FULL_ACCESS)
     
-    weapon = models.ForeignKey('Item', default=default_weapon,
+    weapon = models.ForeignKey('Item', blank=True, null=True,
                                related_name="character_weapon")
-    armour = models.ForeignKey('Item', default=default_armour,
+    armour = models.ForeignKey('Item', blank=True, null=True,
                                related_name="character_armour")
     gold = models.IntegerField(default=300)
     
@@ -294,7 +294,7 @@ class Item(models.Model):
     
     is_unlimited_stack = models.BooleanField(default=False)
     max_stack_size = models.PositiveIntegerField(default=1)
-    
+    """
     #Property stuff
     def get_all_ipis(self):
         """Return all IPIs for this object"""
@@ -362,7 +362,7 @@ class Item(models.Model):
         if ret:
             return int(ret)
     
-    
+    """
     def __unicode__(self):
         return self.name
 
