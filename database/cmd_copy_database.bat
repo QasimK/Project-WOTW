@@ -1,1 +1,0 @@
-copy "__initial_data.json" "../wotw_src/initial_data.json"
