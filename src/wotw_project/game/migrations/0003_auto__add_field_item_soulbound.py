@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Item.soulbound'
-        db.add_column(u'game_item', 'soulbound',
+        # Adding field 'Item.is_soulbound'
+        db.add_column(u'game_item', 'is_soulbound',
                       self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Item.soulbound'
-        db.delete_column(u'game_item', 'soulbound')
+        # Deleting field 'Item.is_soulbound'
+        db.delete_column(u'game_item', 'is_soulbound')
 
 
     models = {
@@ -104,10 +104,10 @@ class Migration(SchemaMigration):
         u'game.item': {
             'Meta': {'object_name': 'Item'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_soulbound': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_unlimited_stack': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'max_stack_size': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'soulbound': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         },
         u'game.itemproperty': {
             'Meta': {'object_name': 'ItemProperty'},
