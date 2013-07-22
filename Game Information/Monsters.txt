@@ -1,0 +1,17 @@
+Location
+--------
+Monster Name
+	HP/Damage/Armour
+
+Village
+-------
+Bloodhound
+	99/15/10
+Rabid Dog
+	30/5/5
+Lone Wolf
+	50/10/5
+Thief
+	70/12/12
+Vicious Bear
+	70/8/8
