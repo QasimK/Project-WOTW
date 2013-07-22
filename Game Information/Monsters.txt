@@ -1,17 +1,17 @@
 Location
 --------
 Monster Name
-	HP/Damage/Armour
+	HP(dev)/Damage/Armour/Gold(dev)
 
 Village
 -------
 Bloodhound
-	99/15/10
+	99(0)/15/15/200(0)
 Rabid Dog
-	30/5/5
+	20(10)/5/5/0(0)
 Lone Wolf
-	50/10/5
+	40(10)/10/0(0)
 Thief
-	70/12/12
+	60(20)/12/12/20(10)
 Vicious Bear
-	70/8/8
+	60(20)/8/80(0)
