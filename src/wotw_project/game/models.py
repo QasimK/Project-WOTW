@@ -306,6 +306,16 @@ class Item(models.Model):
         prop = self.itemproperty_set.get(name=ItemProperty.DAMAGE_ABSORBED)
         return int(prop.value)
     
+    @property
+    def prop_cost(self):
+        prop = self.itemproperty_set.get(name=ItemProperty.COST)
+        return int(prop.value)
+    
+    @property
+    def prop_health_healed(self):
+        prop = self.itemproperty_set.get(name=ItemProperty.HEALTH_HEALED)
+        return int(prop.value)
+    
     #===========================================================================
     # #Property stuff
     # def get_all_ipis(self):
