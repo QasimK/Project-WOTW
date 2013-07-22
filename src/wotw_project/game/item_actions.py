@@ -11,7 +11,7 @@ The action could do anything.
 Action functions require the item and the target.
 The target must be a Character (for now).
 
-All subject to change.
+All subject to change. Obviously.
 '''
 
 from wotw_project.game import models
