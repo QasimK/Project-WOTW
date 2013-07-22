@@ -1,7 +1,7 @@
 '''
 Created on 1 Sep 2010
 
-@author: Qasim 2
+@author: Qasim
 '''
 
 from django.contrib import admin
