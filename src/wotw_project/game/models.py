@@ -295,6 +295,17 @@ class Item(models.Model):
     
     is_soulbound = models.BooleanField(default=False)
     
+    @property
+    def prop_damage(self):
+        """Return the damage item property"""
+        return int(self.itemproperty_set.get(name=ItemProperty.DAMAGE).value)
+    
+    @property
+    def prop_damage_absorbed(self):
+        """Return the damage absorbed item property"""
+        prop = self.itemproperty_set.get(name=ItemProperty.DAMAGE_ABSORBED)
+        return int(prop.value)
+    
     #===========================================================================
     # #Property stuff
     # def get_all_ipis(self):
@@ -374,13 +385,11 @@ class Item(models.Model):
 class ItemProperty(models.Model):
     """A property that exists on an item"""
     
-    SOULBOUND = 'sb'
     COST = 'cst'
     DAMAGE = "dmg"
     HEALTH_HEALED = "hh"
     DAMAGE_ABSORBED = "da"
     ITEM_PROPERTY_CHOICES = (
-        (SOULBOUND, "Soulbound"),
         (COST, "Cost"),
         (DAMAGE, "Damage Dealt"),
         (HEALTH_HEALED, "Health Healed"),

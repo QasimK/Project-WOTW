@@ -13,21 +13,22 @@ from wotw_project.game.models import (
     Recipe, RecipeIngredientInfo, RecipeProductInfo)
 
 def wepinfo(obj):
-    s = "%s (%s)" % (str(obj.weapon), str(obj.weapon.damage))
-    if obj.weapon.soulbound:
+    s = "%s (%s)" % (str(obj.weapon), str(obj.weapon.prop_damage))
+    if obj.weapon.is_soulbound:
         s += "*"
     return s
-wepinfo.short_description = "Weapon"
+wepinfo.short_description = "Weapon (damage)"
 
 def arminfo(obj):
-    s = "%s (%s" % (str(obj.armour), str(obj.armour.absorption)) +r"%)"
-    if obj.armour.soulbound:
+    s = "%s (%s)" % (str(obj.armour), str(obj.armour.prop_damage_absorbed))
+    if obj.armour.is_soulbound:
         s += "*"
     return s
-arminfo.short_description = "Armour"
+arminfo.short_description = "Armour (damage absorbed)"
+
 
 class MonsterAdmin(admin.ModelAdmin):
-    list_display = ('name', 'hp', 'weapon', 'armour', 'gold')
+    list_display = ('name', 'hp', wepinfo, arminfo, 'gold')
 
 
 def item_properties(item):
@@ -40,10 +41,11 @@ class ItemPropertyInfoInline(admin.TabularInline):
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_unlimited_stack', 'max_stack_size',
-                    item_properties)
+                   'is_soulbound', item_properties)
     search_fields = ('name',)
     list_filter = ('itemproperty__name', 'is_unlimited_stack')
-    fields = ('name', ('is_unlimited_stack', 'max_stack_size'))
+    fields = ('name', ('is_unlimited_stack', 'max_stack_size'),
+              ('is_soulbound',))
     inlines = [ItemPropertyInfoInline]
 
 #class ItemPropertyAdmin(admin.ModelAdmin):
