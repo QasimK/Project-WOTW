@@ -294,75 +294,77 @@ class Item(models.Model):
     
     is_unlimited_stack = models.BooleanField(default=False)
     max_stack_size = models.PositiveIntegerField(default=1)
-    """
-    #Property stuff
-    def get_all_ipis(self):
-        """Return all IPIs for this object"""
-        return self.itempropertyinfo_set.all()
     
+    #===========================================================================
+    # #Property stuff
+    # def get_all_ipis(self):
+    #    """Return all IPIs for this object"""
+    #    return self.itempropertyinfo_set.all()
+    # 
+    # 
+    # def get_all_props_ext(self):
+    #    """Return a list of (item property name, item property info object)"""
+    #    ps = []
+    #    #itempropertyinfo
+    #    for ipi in self.itempropertyinfo_set.all():
+    #        ps.append( (ipi.item_property.name, ipi) )
+    #    return ps
+    # 
+    # def get_all_props(self):
+    #    """Return all IPIs"""
+    #    return self.itempropertyinfo_set.all()
+    # 
+    # def get_named_props(self, prop_name):
+    #    """Return the list of item properties with the name specified"""
+    #    ipis = self.itempropertyinfo_set.filter(item_property__name=prop_name)
+    #    if ipis:
+    #        return ipis
+    #    return None
+    # 
+    # def get_named_prop(self, prop_name):
+    #    """Return the *single* item property *value* specified
+    #    
+    #    Need to check this:
+    #    If there is more than one it will return the first one."""
+    #    try:
+    #        ipi = self.itempropertyinfo_set.get(item_property__name=prop_name)
+    #        return ipi.value
+    #    except ItemPropertyInfo.DoesNotExist:
+    #        return None
+    # 
+    # 
+    # def prop_damage(self):
+    #    """Shortcut: Return damage property of item if there is one"""
+    #    ret = self.get_named_prop("damage")
+    #    if ret:
+    #        return int(ret)
+    # 
+    # def prop_damage_absorbed(self):
+    #    ret = self.get_named_prop("damage absorbed")
+    #    if ret:
+    #        return int(ret)
+    # 
+    # def prop_health_healed(self):
+    #    ret = self.get_named_prop("health healed")
+    #    if ret:
+    #        return int(ret)
+    # 
+    # def prop_soulbound(self):
+    #    ret = self.get_named_prop("soulbound")
+    #    if ret in ("true",):
+    #        return True
+    #    elif ret in ("false",):
+    #        return False
+    #    elif not ret: #ret=None
+    #        return False
+    # 
+    # def prop_cost(self):
+    #    ret = self.get_named_prop("cost")
+    #    if ret:
+    #        return int(ret)
+    # 
+    #===========================================================================
     
-    def get_all_props_ext(self):
-        """Return a list of (item property name, item property info object)"""
-        ps = []
-        #itempropertyinfo
-        for ipi in self.itempropertyinfo_set.all():
-            ps.append( (ipi.item_property.name, ipi) )
-        return ps
-    
-    def get_all_props(self):
-        """Return all IPIs"""
-        return self.itempropertyinfo_set.all()
-    
-    def get_named_props(self, prop_name):
-        """Return the list of item properties with the name specified"""
-        ipis = self.itempropertyinfo_set.filter(item_property__name=prop_name)
-        if ipis:
-            return ipis
-        return None
-    
-    def get_named_prop(self, prop_name):
-        """Return the *single* item property *value* specified
-        
-        Need to check this:
-        If there is more than one it will return the first one."""
-        try:
-            ipi = self.itempropertyinfo_set.get(item_property__name=prop_name)
-            return ipi.value
-        except ItemPropertyInfo.DoesNotExist:
-            return None
-    
-    
-    def prop_damage(self):
-        """Shortcut: Return damage property of item if there is one"""
-        ret = self.get_named_prop("damage")
-        if ret:
-            return int(ret)
-    
-    def prop_damage_absorbed(self):
-        ret = self.get_named_prop("damage absorbed")
-        if ret:
-            return int(ret)
-    
-    def prop_health_healed(self):
-        ret = self.get_named_prop("health healed")
-        if ret:
-            return int(ret)
-    
-    def prop_soulbound(self):
-        ret = self.get_named_prop("soulbound")
-        if ret in ("true",):
-            return True
-        elif ret in ("false",):
-            return False
-        elif not ret: #ret=None
-            return False
-    
-    def prop_cost(self):
-        ret = self.get_named_prop("cost")
-        if ret:
-            return int(ret)
-    
-    """
     def __unicode__(self):
         return self.name
 
