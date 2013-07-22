@@ -80,11 +80,7 @@ class InventoryLacksSpace(WotwGameException):
                     .format(self.inventory)
         return err
 
-#Default stuff for model fields
-def default_weapon():
-    return Item.objects.get(name="Fists and Legs")
-def default_armour():
-    return Item.objects.get(name="Clothes")
+
 
 #---Models
 class Character(models.Model):
@@ -105,13 +101,11 @@ class Character(models.Model):
                                       choices=INVENTORY_MODE_CHOICES,
                                       default=INV_FULL_ACCESS)
     
-    weapon = models.ForeignKey('Item', blank=True, null=True,
-                               related_name="character_weapon")
-    armour = models.ForeignKey('Item', blank=True, null=True,
-                               related_name="character_armour")
+    weapon = models.ForeignKey('Item', related_name="character_weapon")
+    armour = models.ForeignKey('Item', related_name="character_armour")
     gold = models.IntegerField(default=300)
     
-    #Special Delete code req.
+    #Special Delete code required for this
     fight = models.OneToOneField('ActiveMonster', blank=True, null=True)
     
     game_view = models.CharField(max_length=100, default="village-in")
@@ -123,10 +117,14 @@ class Character(models.Model):
         return self.user_account.__unicode__()
     
     @classmethod
-    def get_new_character(cls, user_account):
+    def make_new_character(cls, user_account):
         """Create and return a new character"""
         inv = Inventory.objects.create(is_unlimited=False, size=12)
-        char = cls.objects.create(user_account=user_account, inventory=inv)
+        weapon = Item.objects.get(name="Fists and Legs")
+        armour = Item.objects.get(name="Clothes")
+        char = cls.objects.create(user_account=user_account, inventory=inv,
+                                  weapon=weapon, armour=armour)
+        
         default_recipes = Recipe.objects.filter(
             Q(name__iexact='Waking Brew Recipe') |
             Q(name__iexact='Wounds Potion Recipe') |

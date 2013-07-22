@@ -27,7 +27,7 @@ def main_page(request):
             new_user = User.objects.create_user(username, "", password)
             
             #Create their character
-            Character.get_new_character(new_user)
+            Character.make_new_character(new_user)
             
             return redirect('django.contrib.auth.views.login')
         #If the form isn't valid, it was automatically have errors in it
