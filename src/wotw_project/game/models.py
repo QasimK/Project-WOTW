@@ -293,6 +293,8 @@ class Item(models.Model):
     is_unlimited_stack = models.BooleanField(default=False)
     max_stack_size = models.PositiveIntegerField(default=1)
     
+    soulbound = models.BooleanField(default=False)
+    
     #===========================================================================
     # #Property stuff
     # def get_all_ipis(self):
