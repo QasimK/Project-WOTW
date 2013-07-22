@@ -1,1 +1,0 @@
-del wotw_database
