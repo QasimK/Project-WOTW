@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}WOTW Game{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}format.css" />
+  </head>
+  <body>
+	<div id="container">
+		<h1>WOTW</h1>
+		<section style="position: fixed; left: 50%; top: 50px; margin-left: 30px; padding: 5px; border: 1px dashed black;">
+			<a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+			<section>
+				<h2>You and the world</h2>
+				<ul>
+					<li>HP: {{char.hp}}/{{char.max_hp}}</li>
+					<li>Gold: {{char.gold}}</li>
+					<li>Weapon: {{char.weapon}}
+						(damage: {{ char.weapon.prop_damage }})
+					</li>
+					<li>Armour: {{char.armour}}
+						(damage absorbed: {{char.armour.prop_damage_absorbed}})
+					</li>
+					
+					{% with civ=char.inventory_mode %}
+						{# Inventory link #}
+						{% if civ != char.INV_NO_ACCESS %}
+							{% url "game.views.char_inventory" as inventory_url %}
+							{% if not request.path == inventory_url %}
+								<li><a href="{{ inventory_url }}">Inventory</a></li>
+							{% endif %}
+						{% endif %}
+						
+						{# Make potions page #}
+						{% if civ != char.INV_NO_ACCESS %}
+							{% url "game.views.crafting" as crafting_url %}
+							{% if not request.path == crafting_url %}
+								<li><a href="{{ crafting_url }}">Crafting</a></li>
+							{% endif %}
+						{% endif %}
+					{% endwith %}
+					
+					{# Back to game view link #}
+					{% url "game.views.game_view_resolver" as game_view_url %}
+					{% if not request.path == game_view_url %}
+						<li><a href="{{ game_view_url }}">Continue with your adventure</a></li>
+					{% endif %}
+				</ul>
+			</section>
+			
+			{% if debug %}
+				<section>
+					<h2>Debug</h2>
+					<p>{{ DEBUG_CHAR_VIEW|safe }}</p>
+				</section>
+			{% endif %}
+		</section>
+		
+		{% if char.message_set.all %}
+			<section style="width: 50%; padding: 10px; border: 1px dotted brown; margin-bottom: 10px;">
+				<h2>Messages</h2>
+				<ul>
+					{% for message in char.message_set.all %}
+					<li>
+						<form name="delete_message_form{{forloop.counter0}}"
+						  action="{% url "game.views.delete_message" forloop.counter0 %}"
+						  method="post">
+							{% csrf_token %}
+							<input type="hidden" name="next_page" value="{{request.path}}" />
+						</form>
+						{{ message.body }}
+						<a href="javascript: document.delete_message_form{{forloop.counter0}}.submit();">
+							[X]
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</section>
+		{% endif %}
+		
+		<section style="width: 50%; padding: 10px; border: 1px dotted brown;">
+			{% block page_content %}
+				<h2>ie. The main page content title</h2>
+				<p>ie. The main page content</p>
+			{% endblock %}
+		</section>
+	</div>
+  </body>
+</html>

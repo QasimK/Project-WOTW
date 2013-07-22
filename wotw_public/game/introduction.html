@@ -1,0 +1,8 @@
+{% extends "game/game_base.html" %}
+
+{% block page_content %}
+	<h2>Welcome to WOTW</h2>
+	<a href="{% url "game.views.game_view_resolver" %}">
+		Continue with your adventure.
+	</a>
+{% endblock %}

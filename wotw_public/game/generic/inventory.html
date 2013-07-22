@@ -1,0 +1,57 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	
+	{% if char.inventory_mode == char.INV_FULL_ACCESS or char.inventory_mode == char.INV_VIEW_ONLY %}
+		{% if char.inventory_mode == char.INV_FULL_ACCESS %}
+			<h2>Inventory</h2>
+		{% else %}
+			<h2>Inventory (View Only)</h2>
+		{% endif %}
+		<p>Slots free: {{ char.inventory.num_free_slots }}</p>
+		{% for item, total_stack_size in inv_cv %}
+			<h3>{{ item.name }}</h3>
+			<p>
+				{% with max_stack_size=item.max_stack_size num_stacks=total_stack_size|div:item.max_stack_size|ceil %}
+					You have {{total_stack_size}} (over
+					~{{ num_stacks }} slot{{ num_stacks|pluralize }}).
+					<br />
+					(Max. stack size: {{ max_stack_size }})
+				{% endwith %}
+			</p>
+			{% with props=item.get_all_props_ext %}
+				{% if props %}
+					<ul>
+						{% for prop_name, prop_ipi in props %}
+							{% if prop_name == "action" %}
+								{% if char.inventory_mode == char.INV_FULL_ACCESS %}
+									<li>Do action: {% action_link "inventory-item-action" prop_ipi.value "item-name" item.name "action-name" prop_ipi.value %}</li>
+								{% else %}
+									<li>Action (not currently doable): {{prop_ipi.value}}</li>
+								{% endif %}
+							{% else %}
+								<li>{{ prop_name|capfirst }}: {{ prop_ipi.value }}</li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+			{% if char.inventory_mode == char.INV_FULL_ACCESS %}
+				<p>
+					{% action_link "inventory-drop-item" "Drop 1 of this item" "item-name" item.name "amount" "1" %}
+					{% if total_stack_size > 1 %}
+						<br />
+						{% action_link "inventory-drop-item" "Drop all of these" "item-name" item.name "amount" "all" %}
+					{% endif %}
+				</p>
+			{% endif %}
+		{% empty %}
+			<p>You have no items in your inventory</p>
+		{% endfor %}
+	{% else %}
+		<h2>Inventory Blocked</h2>
+	{% endif %}
+
+{% endblock %}

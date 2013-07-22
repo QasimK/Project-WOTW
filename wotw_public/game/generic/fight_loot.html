@@ -1,0 +1,46 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>You are looting {{ fight.monster_info.name }}</h2>
+	<p>
+		You examine the corpse to see if there is anything of value.
+	</p>
+	<p>
+		{% if is_weapon_looted %}
+			You have already taken the weapon which was the {{ weapon.name }}.
+		{% else %}
+			{% if weapon.prop_soulbound %}
+				The {{ weapon.name }} cannot be looted.
+			{% else %}
+				The {{ fight_info.name }} was using it's {{ weapon.name }}
+				(damage: {{ weapon.prop_damage }}) as it's weapon.
+				<br />
+				{% action_link "generic-fight-loot-item" "Take the weapon." "type" "weapon" %}
+                <br />
+                {% action_link "generic-fight-loot-item" "Replace your weapon with this one." "type" "weapon-replace" %}
+			{% endif %}
+		{% endif %}
+	</p>
+	<p>
+		{% if is_armour_looted %}
+			You have already taken the armour which was the {{ armour.name }}.
+		{% else %}
+			{% if armour.prop_soulbound %}
+				The {{ armour.name }} cannot be looted.
+			{% else %}
+				The {{ armour.name }} can be taken. It absorbs
+				{{ armour.prop_damage_absorbed }} damage.
+				<br />
+				{% action_link "generic-fight-loot-item" "Take the armour." "type" "armour" %}
+                <br />
+                {% action_link "generic-fight-loot-item" "Replace your armour with this one." "type" "armour-replace" %}
+			{% endif %}
+		{% endif %}
+	</p>
+	<p>
+		{% action_link "generic-fight-return" "Leave the loot" %}
+	</p>
+
+{% endblock %}

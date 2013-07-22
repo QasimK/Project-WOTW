@@ -1,0 +1,37 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+{% block page_content %}
+	<h2>You are in the Village Market</h2>
+	<p>
+		You walked to the village market square which has many different shops and stalls.
+	</p>
+		{% with random_shout="123456"|random %}
+			{% if random_shout == "1" %}
+				You hear the herb store shouting, "Get your fresh herbs here!"
+			{% endif %}
+			{% if random_shout == "2" %}
+				You hear the general store shouting, "Get everything you've ever wanted here!"
+			{% endif %}
+			{% if random_shout == "3" %}
+				The marketplace is awfully quiet; there aren't very many people around.
+				The shops are still open though.
+			{% endif%}
+		{% endwith %}
+	</p>
+	<p>
+		{% action_link "village-goto-general-shop" "Visit the general store." %}
+	</p>
+	<p>
+        {% action_link "village-goto-herb-shop" "Visit the herbology store." %}
+	</p>
+	<p>
+		Visit the...
+	</p>
+	<p>
+		{% action_link "village-leave-market" "Return to the village centre" %}
+	</p>
+	<p>
+		{% action_link "village-explore" "Go on an adventure through the village" %}
+	</p>
+{% endblock %}

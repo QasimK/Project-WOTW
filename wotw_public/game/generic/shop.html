@@ -1,0 +1,48 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	<h2>{{shop.name}}</h2>
+	<p>
+		{% action_link "generic-leave-shop" "Leave the shop and return to the village." %}
+	</p>
+	<section>
+		{% with iiis=shop.inventory.get_iiis.all %}
+			{% if iiis %}
+				<h3>Items</h3>
+				{# Inventory item infos #}
+				<section>
+						{% for iii in iiis %}
+							<h4>{{ iii.item.name }}</h4>
+							
+							{# Item property infos #}
+							{% with ipis=iii.item.get_all_ipis %}
+								<ul>
+								{% for ipi in ipis %}
+									<li>{{ ipi.item_property.name|capfirst }}: {{ ipi.value }}</li>
+								{% endfor %}
+									<li>Max stack size: {{ iii.item.max_stack_size }}</li>
+								</ul>
+							{% endwith %}
+							
+                            <p>
+                            {% if char.gold >= iii.item.prop_cost %}
+								{% action_link "generic-purchase-item" "Purchase one" "item-name" iii.item.name %}
+                            {% else %}
+                                You do not have enough money to purchase this item.
+                            {% endif %}
+								<br />
+								(Stock: {{ iii.stack_size }})
+                            </p>
+						{% endfor %}
+				</section>
+			{% else %}
+				The shops has no items! It may be bankrupt! Unfortunately you cannot talk to people yet!
+				And people cannot talk to you yet! You cannot help them!
+                They are probably crying in a corner!
+			{% endif %}
+		{% endwith %}
+	</section>
+
+{% endblock %}

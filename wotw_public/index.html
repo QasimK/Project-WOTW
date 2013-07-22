@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}WOTW{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="format.css" />
+  </head>
+  <body>
+	{% block body %}
+		<h1>WOTW</h1>
+		<a href="{% url "django.contrib.auth.views.login" %}">
+			You can login if you already have an account
+		</a>
+		<br />
+		<a href="{% url "admin:index" %}">
+			Admin site
+		</a>
+		
+		{% if registration_succeeded %}
+			<p>{{ registration_succeeded }}</p>
+		{% endif %}
+		<section>
+			<h2>Register</h2>
+			<p>If you do not have an account you can register here</p>
+			<form action="{{ registration_form_action }}" method="POST">{% csrf_token %}
+				<table>
+					{{ registration_form }}
+					<tr><td><input type="submit" value="Register"/></td></tr>
+				</table>
+			</form>
+			
+		</section>
+	{% endblock %}
+  </body>
+</html>

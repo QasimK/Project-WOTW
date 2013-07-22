@@ -1,0 +1,32 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+{% block page_content %}
+	<h2>As you looked around the village...</h2>
+	<p>
+		{% if text_selection|mod:3 == 0 %}
+			The village is quiet. People walk past minding their own business.
+			You don't see anything out of the ordinary. Indeed you could say
+			it is very boring. Even the marketplace itself seems to be quiet.
+		{% endif %}
+		{% if text_selection|mod:3 == 1 %}
+			You through the streets of the wooden houses. You can see children
+			playing but that is about the most interesting thing that is happening.
+			Maybe you would rather be playing with wooden marbles than trying to
+			find something interesting around here?
+		{% endif %}
+		{% if text_selection|mod:3 == 2 %}
+			You walk around the outskirts of the village but there doesn't seem to be
+			so much as an insect around. The forest itself is quiet and you don't see
+			anything moving there. You can hear the rustle of the trees as the wind blows
+			but nothing more.
+		{% endif %}
+	</p>
+	<p>
+		{% action_link "village-explore" "Would you rather sneak around the village exploring?" %}
+	</p>
+	<p>
+		{% action_link "village-return" "Do you want to return to the village centre?" %}
+	</p>
+	
+{% endblock %}

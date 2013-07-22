@@ -1,0 +1,44 @@
+{% extends "game/game_base.html" %}
+{% load wotw_extras %}
+
+
+{% block page_content %}
+	{% with fight_info=fight.monster_info %}
+		<h2>Fight: {{ fight_info.name }}</h2>
+		<p>You are in the middle of a fight!</p>
+		
+		{% if char_attack %}
+			<p>
+				You dealt {{char_attack}} damage to the monster!
+			</p>
+		{% endif %}
+		
+		{% if mons_attack %}
+			<p>
+				The monster dealt {{mons_attack}} damage to you!
+			</p>
+		{% endif %}
+		
+		<p>
+			{{fight.monster_info.name}} status:
+			<ul>
+				<li>HP: {{ fight.hp }}</li>
+				<li>
+					Weapon: {{ fight_info.weapon.name }}
+						(damage: {{fight_info.weapon.prop_damage}})
+				</li>
+				<li>
+					Armour: {{ fight_info.armour.name }}
+						(damage absorbed: {{fight_info.armour.prop_damage_absorbed}})
+				</li>
+			</ul>
+		</p>
+		<p>
+			{% action_link "generic-fight-attack" "Attack!" %}
+		</p>
+		<p>
+			{% action_link "generic-fight-runaway" "Runaway!" %}
+		</p>
+	{% endwith %}
+
+{% endblock %}

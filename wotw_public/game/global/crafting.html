@@ -1,0 +1,44 @@
+{% extends "game/game_base.html" %}
+
+{#
+Takes known_recipes:
+	[ (recipe, ingredients_list, products_list, can make?), ... ]
+where ingredients_list:
+	[ (ingredient, quantity, has enough?), ... ]
+and products_list:
+	[ (product, quantity), ... ]
+	
+Takes making_allowed: True/False depending on whether you can make any potions
+#}
+
+{% block page_content %}
+	{% if char.inventory_mode == char.INV_FULL_ACCESS %}
+		<h2>Make Potions</h2>
+	{% elif char.inventory_mode == char.INV_VIEW_ONLY %}
+		<h2>View Recipes (Cannot make anything at this time)</h2>
+	{% endif %}
+	
+	{% for recipe, ingredients_list, products_list, can_make in known_recipes %}
+		<h3>{{ recipe.name }}</h3>
+		<p>
+			Ingredients required:
+			{% for ingredient, quantity, has_enough in ingredients_list %}
+				{% if has_enough %}
+					<span class="good">
+				{% else %}
+					<span class="bad">
+				{% endif %}
+						{{ quantity }}x{{ ingredient.name }}</span>{% if not forloop.last %},{% endif %}
+			{% endfor %}
+			<br />
+			Products formed:
+			{% for product, quantity in products_list %}
+				{{ quantity }}x{{ product.name }}{% if not forloop.last %},{% endif %}
+			{% endfor %}
+			</ul>
+			{% if can_make and making_allowed %}
+				{% action_link "crafting-make" "Make One" "recipe-name" recipe.name %}
+			{% endif %}
+		</p>
+	{% endfor %}
+{% endblock %}

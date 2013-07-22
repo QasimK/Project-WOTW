@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+<h1>WOTW- Login</h1>
+<p><a href="{% url "main_website.views.main_page" %}">Back</a></p>
+<form action="{% url "django.contrib.auth.views.login" %}" method="POST">
+	{% csrf_token %}
+	<table>
+		{{ form }}
+		<tr><td>
+			<input type="hidden" name="next" value="{{next}}" />
+			<input type="submit" value="Login" />
+		</td></tr>
+	</table>
+</form>
+
+{% endblock %}
