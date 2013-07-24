@@ -1,0 +1,55 @@
+Herbology & Potion Making
+=========================
+Stack size of 5.
+
+Kava leaves
+	Type guide: Restoration
+	45 gold
+
+Elderberry
+	Type guide: Restoration
+	110 gold
+
+Nightshade
+	Type guide: Poison
+	80 gold
+
+Chaparral
+	Type guide: Bombing
+	230 gold
+
+Figger seeds
+	Type guide: Bombing
+	120 gold
+
+Aloe vera
+	Type guide: Curing
+	40 gold
+
+Potions
+-------------
+
+Waking Brew
+    Type: Restoration
+    Kava leaves
+    Heal 50
+
+Wounds Potion
+    Type: Restoration
+    Kava leaves & Elderberry
+    Heal 100
+
+Nightshade Potion
+    Type: Weapon Poison
+    Nightshade
+    2 damage for each of 5 turns (stacks per hit)
+
+Rock Concoction
+    Type: Bomb
+    Chaparral & Figger seeds
+    40 damage
+
+Sleeping Brew
+    Type: Anti-poison
+    Aloe vera
+    Cure all poisons
