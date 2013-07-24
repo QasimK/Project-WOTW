@@ -27,13 +27,17 @@ def arminfo(obj):
 arminfo.short_description = "Armour (damage absorbed)"
 
 
+
 class MonsterAdmin(admin.ModelAdmin):
     list_display = ('name', 'hp', wepinfo, arminfo, 'gold')
 
 
 def item_properties(item):
     props = item.itemproperty_set.all()
-    return ''.join(["["+str(prop.get_name_display())+"] " for prop in props])
+    s = ""
+    for prop in props:
+        s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
+    return s
 
 class ItemPropertyInfoInline(admin.TabularInline):
     model = ItemProperty
