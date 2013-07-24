@@ -908,10 +908,10 @@ def a_village_explore(request, char):
     
     def eve_fight():
         potential_monsters = [
-            "Trader",
-            "Villager",
+            "Rabid Dog",
+            "Lone Wolf",
             "Thief",
-            "Disgraced Guard"
+            "Vicious Bear"
         ]
         
         monster = random.choice(potential_monsters)
