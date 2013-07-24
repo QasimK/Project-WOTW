@@ -652,7 +652,7 @@ def a_generic_fight_loot_item(request, char):
         if char.fight.looted_weapon:
             err = "Major Error: You have already looted the weapon."
             return create_error(char, err, 5)
-        elif char.fight.monster_info.weapon.prop_soulbound():
+        elif char.fight.monster_info.weapon.is_soulbound:
             err = "Major Error: The weapon is soulbound, you cannot loot it."
             return create_error(char, err, 5)
         elif loot_type == "weapon":
@@ -674,7 +674,7 @@ def a_generic_fight_loot_item(request, char):
         if char.fight.looted_armour:
             err = "Major Error: You have already looted the armour."
             return create_error(char, err, 5)
-        elif char.fight.monster_info.armour.prop_soulbound():
+        elif char.fight.monster_info.armour.is_soulbound:
             err = "Major Error: The armour is soulbound, you cannot loot it."
             return create_error(char, err, 5)
         elif loot_type == "armour":
