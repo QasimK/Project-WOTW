@@ -131,6 +131,7 @@ class Character(models.Model):
             Q(name__iexact='Nightshade Potion Recipe') |
             Q(name__iexact='Rock Concoction Recipe') |
             Q(name__iexact='Sleeping Brew Recipe')).values_list('pk', flat=True)
+        assert len(default_recipes) == 5
         char.known_recipes.add(*default_recipes)
         return char
     
