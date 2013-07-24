@@ -400,20 +400,23 @@ class ItemProperty(models.Model):
     DAMAGE = "dmg"
     HEALTH_HEALED = "hh"
     DAMAGE_ABSORBED = "da"
+    ITEM_ACTION = "ia"
     ITEM_PROPERTY_CHOICES = (
         (COST, "Cost"),
         (DAMAGE, "Damage Dealt"),
         (HEALTH_HEALED, "Health Healed"),
-        (DAMAGE_ABSORBED, "Damage Absorbed")
+        (DAMAGE_ABSORBED, "Damage Absorbed"),
+        (ITEM_ACTION, "Item Action")
     )
     
     item = models.ForeignKey(Item)
-    name = models.CharField(max_length=10, choices=ITEM_PROPERTY_CHOICES)
+    name = models.CharField(max_length=3, choices=ITEM_PROPERTY_CHOICES)
     value = models.CharField(max_length=100)
     
     class Meta:
         verbose_name = "item property"
         verbose_name_plural = "item properties"
+        unique_together = ("item", "name", "value")
     
     def __unicode__(self):
         return self.name
