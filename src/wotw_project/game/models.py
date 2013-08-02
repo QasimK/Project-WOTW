@@ -460,39 +460,6 @@ class ItemAction(models.Model):
     allow_out_combat = models.BooleanField(default=False)
     
 
-#TODO: Remove ItemPropertyInfo
-#Make name as a Choice.
-#Add value to ItemProperty.
-#===============================================================================
-# class ItemPropertyInfo(models.Model):
-#    """The 'through' table for item properties"""
-#    item = models.ForeignKey(Item)
-#    item_property = models.ForeignKey(ItemProperty)
-#    
-#    value = models.CharField(max_length=100)
-#    
-#    def value_int(self):
-#        """Return value as an integer otherwise None"""
-#        try:
-#            return int(self.value)
-#        except ValueError:
-#            return None
-#    
-#    def value_boolean(self):
-#        """Return the value as a boolean otherwise None"""
-#        if self.value.lower() == "true":
-#            return True
-#        elif self.value.lower() == "false":
-#            return False
-#        return None
-#    
-#    def __unicode__(self):
-#        s = "%s %s (%s)" % (str(self.item), str(self.item_property),
-#                            str(self.value))
-#        return s
-#===============================================================================
-
-    
 
 
 class Shop(models.Model):
