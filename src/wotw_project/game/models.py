@@ -296,6 +296,8 @@ class Item(models.Model):
     
     is_soulbound = models.BooleanField(default=False)
     
+    item_actions = models.ManyToManyField('ItemAction')
+    
     @property
     def prop_damage(self):
         """Return the damage item property"""
@@ -316,6 +318,7 @@ class Item(models.Model):
     def prop_health_healed(self):
         prop = self.itemproperty_set.get(name=ItemProperty.HEALTH_HEALED)
         return int(prop.value)
+    
     
     #===========================================================================
     # #Property stuff
@@ -419,6 +422,22 @@ class ItemProperty(models.Model):
     def __unicode__(self):
         return self.name
 
+
+def get_item_action_choices():
+    from wotw_project.game import item_actions
+    return [(f, f) for f in item_actions.ITEM_ACTIONS.keys()]
+
+class ItemAction(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    display_text = models.CharField(max_length=100)
+    func = models.CharField(max_length=100)    
+    
+    allow_char_target = models.BooleanField(default=False)
+    allow_fight_target = models.BooleanField(default=False)
+    
+    allow_in_combat = models.BooleanField(default=False)
+    allow_out_combat = models.BooleanField(default=False)
+    
 
 #TODO: Remove ItemPropertyInfo
 #Make name as a Choice.
