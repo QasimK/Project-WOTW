@@ -400,13 +400,11 @@ class ItemProperty(models.Model):
     DAMAGE = "dmg"
     HEALTH_HEALED = "hh"
     DAMAGE_ABSORBED = "da"
-    ITEM_ACTION = "ia"
     ITEM_PROPERTY_CHOICES = (
         (COST, "Cost"),
         (DAMAGE, "Damage Dealt"),
         (HEALTH_HEALED, "Health Healed"),
         (DAMAGE_ABSORBED, "Damage Absorbed"),
-        (ITEM_ACTION, "Item Action")
     )
     
     item = models.ForeignKey(Item)
@@ -559,7 +557,7 @@ class Inventory(models.Model):
         remove_items = [ (item, quantity), ...]
         
         If doit
-            raise InventoryLacksSpace (or nothing for success)
+            raise InventoryLacksSpace for error or return None for success
         otherwise return whether it is possible
         """
         if add_items is None:
