@@ -428,27 +428,7 @@ def get_item_action_choices():
     return [(f, f) for f in item_actions.ITEM_ACTIONS.keys()]
 
 class ItemAction(models.Model):
-    """Actions that the character can do with the item
-    
-    display_text Examples
-    ---------------------
-    If allow_char_target only then display as "Eat".
-    If also allow_fight_target then display as "
-    
-    Target: Inventory Item would display as "use with _inventory item_"
-    or "use with sword in inventory"
-    
-    TODO: Is there any reason for an item to target character or fight monster
-    with same display text?
-    If there isn't then should we specify multiple display_texts or
-    have multiple item actions?
-    
-    IE. "Use (_Self_, _Fight_)" vs
-    "_Use with Self_
-     _Throw at enemy_"
-     
-    Note: It might in fact use the same function - or it might not.
-    """
+    """Actions that the character can do with the item"""
     CHAR = 'c'
     FIGHT = 'f'
     INV_ITEM = 'i'
