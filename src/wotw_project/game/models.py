@@ -465,6 +465,9 @@ class ItemAction(models.Model):
     
     allow_in_combat = models.BooleanField(default=False)
     allow_out_combat = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        return self.func
 
 
 class ItemItemActionInfo(models.Model):
