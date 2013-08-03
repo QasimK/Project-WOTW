@@ -174,7 +174,6 @@ def allowed_exit_views(*views):
 
     
 
-#TODO: Item actions
 def char_inventory(request):
     char = get_char(request)
     if char.inventory_mode in (models.Character.INV_FULL_ACCESS,
@@ -791,6 +790,8 @@ def a_inventory_item_action(request, char):
         item-name: the item name
         action-name: name of action"
     """
+    #TODO: Doing item actions
+    #Should I have separate for combat actions and for inventory actions?
     
     if char.inventory_mode != char.INV_FULL_ACCESS:
         err = "Major error: Cannot do an item action without full inventory access"
@@ -808,12 +809,32 @@ def a_inventory_item_action(request, char):
         "Item not in inventory - you should not be seeing this error."
         create_error(char, err, 5)
     
-    action_list = item.get_named_props("action")
-    if action_list:
-        for action in action_list:
-            if action.value == action_name:
-                item_actions.do_action(action_name, char, item)
-                return redirect(char_inventory)
+    assert isinstance(item, models.Item)
+    
+    action_list = item.get_item_actions_list()
+    the_item_action = None
+    for item_action, display_text in action_list:
+        if item_action.func == action_name:
+            the_item_action = item_action
+            assert isinstance(the_item_action, models.ItemAction)
+            break
+    
+    if the_item_action:
+        if (char.fight is None and the_item_action.allow_out_combat) or
+                (char.fight is not None and the_item_action.allow_in_combat):
+            action_func = item_actions.ITEM_ACTIONS[action_name]
+            
+            if item_action.target == item_action.CHAR:
+                action_func(char, item_action.item, char)
+            elif item_action.target == item_action.FIGHT:
+                pass
+            elif item_action.target == item_action.INV_ITEM:
+                pass
+            
+            return redirect(char_inventory)
+        else:
+            err = "Major error: Cannot use item in/out of combat"
+            create_error(char, err, 5)
     
     #No action_list or no corresponding action
     err = "Major error: Item action, "+\
