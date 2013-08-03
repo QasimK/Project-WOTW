@@ -811,7 +811,7 @@ def a_inventory_item_action(request, char):
     
     assert isinstance(item, models.Item)
     
-    action_list = item.get_item_actions_list()
+    action_list = item.get_item_actions()
     the_item_action = None
     for item_action, display_text in action_list:
         if item_action.func == action_name:
@@ -820,12 +820,12 @@ def a_inventory_item_action(request, char):
             break
     
     if the_item_action:
-        if (char.fight is None and the_item_action.allow_out_combat) or
-                (char.fight is not None and the_item_action.allow_in_combat):
+        if((char.fight is None and the_item_action.allow_out_combat) or
+                (char.fight is not None and the_item_action.allow_in_combat)):
             action_func = item_actions.ITEM_ACTIONS[action_name]
             
             if item_action.target == item_action.CHAR:
-                action_func(char, item_action.item, char)
+                action_func(char, item, char)
             elif item_action.target == item_action.FIGHT:
                 pass
             elif item_action.target == item_action.INV_ITEM:
