@@ -458,8 +458,8 @@ class ItemAction(models.Model):
         (INV_ITEM, 'Inventory Item')
     )
     
-    name = models.CharField(max_length=100, unique=True)
-    func = models.CharField(max_length=100)#, choices=get_item_action_choices())    
+    func = models.CharField(max_length=100, unique=True)
+    #, choices=get_item_action_choices())    
     
     target = models.CharField(max_length=1, choices=TARGET_CHOICES)
     
