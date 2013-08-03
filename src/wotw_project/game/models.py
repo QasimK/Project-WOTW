@@ -84,19 +84,19 @@ class InventoryLacksSpace(WotwGameException):
 
 #---Models
 class Character(models.Model):
-    user_account = models.ForeignKey(models_auth.User)
-    max_hp = models.IntegerField(default=50)
-    hp = models.IntegerField(default=50)
-    
-    #This inventory is created on char creation. Special Deletion code req.
-    inventory = models.OneToOneField('Inventory')
-    
     INV_FULL_ACCESS = 'A'
     INV_VIEW_ONLY = 'B'
     INV_NO_ACCESS = 'C'
     INVENTORY_MODE_CHOICES = ((INV_FULL_ACCESS, 'Edit/View'),
                               (INV_VIEW_ONLY, 'View-only'),
                               (INV_NO_ACCESS, 'No access'))
+    
+    user_account = models.ForeignKey(models_auth.User)
+    max_hp = models.IntegerField(default=50)
+    hp = models.IntegerField(default=50)
+    
+    #This inventory is created on char creation. Special Deletion code required.
+    inventory = models.OneToOneField('Inventory')
     inventory_mode = models.CharField(max_length=1,
                                       choices=INVENTORY_MODE_CHOICES,
                                       default=INV_FULL_ACCESS)
@@ -403,7 +403,7 @@ class ItemProperty(models.Model):
     DAMAGE = "dmg"
     HEALTH_HEALED = "hh"
     DAMAGE_ABSORBED = "da"
-    ITEM_PROPERTY_CHOICES = (
+    NAME_CHOICES = (
         (COST, "Cost"),
         (DAMAGE, "Damage Dealt"),
         (HEALTH_HEALED, "Health Healed"),
@@ -411,7 +411,7 @@ class ItemProperty(models.Model):
     )
     
     item = models.ForeignKey(Item)
-    name = models.CharField(max_length=3, choices=ITEM_PROPERTY_CHOICES)
+    name = models.CharField(max_length=3, choices=NAME_CHOICES)
     value = models.CharField(max_length=100)
     
     class Meta:
@@ -449,17 +449,23 @@ class ItemAction(models.Model):
      
     Note: It might in fact use the same function - or it might not.
     """
+    CHAR = 'c'
+    FIGHT = 'f'
+    INV_ITEM = 'i'
+    TARGET_CHOICES = (
+        (CHAR, 'Character'),
+        (FIGHT, 'Fight'),
+        (INV_ITEM, 'Inventory Item')
+    )
+    
     name = models.CharField(max_length=100, unique=True)
     display_text = models.CharField(max_length=100)
-    func = models.CharField(max_length=100)    
+    func = models.CharField(max_length=100)#, choices=get_item_action_choices())    
     
-    allow_char_target = models.BooleanField(default=False)
-    allow_fight_target = models.BooleanField(default=False)
+    target = models.CharField(max_length=1, choices=TARGET_CHOICES)
     
     allow_in_combat = models.BooleanField(default=False)
     allow_out_combat = models.BooleanField(default=False)
-    
-
 
 
 class Shop(models.Model):
