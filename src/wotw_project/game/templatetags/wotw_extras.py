@@ -32,7 +32,7 @@ def get_str(tag, tokenstr):
 @register.tag(name="action_link")
 def do_action_link(parser, token):
     """
-    {% action_link "registered-action" "text" "varname" varvalue %}
+    {% action_link "registered-action" "display text" "varname" varvalue %}
     
     varvalue can be a variable.
     You can have many variables.
