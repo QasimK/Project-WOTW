@@ -279,7 +279,6 @@ class ActiveMonster(models.Model):
         return str(self.monster_info)
 
 
-
 class Item(models.Model):
     """All items must have a unique name, a cost and the max. stack size.
     (is_unlimited_stack = True means it can stack forever
@@ -296,7 +295,8 @@ class Item(models.Model):
     
     is_soulbound = models.BooleanField(default=False)
     
-    item_actions = models.ManyToManyField('ItemAction')
+    item_actions = models.ManyToManyField('ItemAction',
+                                          through='ItemItemActionInfo')
     
     @property
     def prop_damage(self):
@@ -459,13 +459,18 @@ class ItemAction(models.Model):
     )
     
     name = models.CharField(max_length=100, unique=True)
-    display_text = models.CharField(max_length=100)
     func = models.CharField(max_length=100)#, choices=get_item_action_choices())    
     
     target = models.CharField(max_length=1, choices=TARGET_CHOICES)
     
     allow_in_combat = models.BooleanField(default=False)
     allow_out_combat = models.BooleanField(default=False)
+
+
+class ItemItemActionInfo(models.Model):
+    item = models.ForeignKey(Item)
+    item_action = models.ForeignKey(ItemAction)
+    display_text = models.CharField(max_length=100)
 
 
 class Shop(models.Model):
