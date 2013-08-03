@@ -28,10 +28,10 @@ def IASelfHealOnce(char, item, target):
         target.inventory.remove_item(item)
         
         msg = "You ate the whatever and healed upto {} HP.".format(heal)
-        models.Message.objects.create(target=target, body=msg)
+        models.Message.objects.create(character=char, body=msg)
     else:
         err = "You are already at full hp."
-        models.Message.objects.create(target=target, body=err)
+        models.Message.objects.create(character=char, body=err)
         return err
 
 
