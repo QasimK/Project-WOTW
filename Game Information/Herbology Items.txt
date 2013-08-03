@@ -53,3 +53,4 @@ Sleeping Brew
     Type: Anti-poison
     Aloe vera
     Cure all poisons
+	Decreases damage dealt by 5
