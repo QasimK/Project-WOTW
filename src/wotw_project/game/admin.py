@@ -105,11 +105,8 @@ class ShopAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
-def gvp_name(obj):
-    return str(obj)
-
 class GameViewPropertyAdmin(admin.ModelAdmin):
-    list_display = (gvp_name, 'char', 'name', 'value')
+    list_display = ('__unicode__', 'char', 'name', 'value')
 
 
 def get_recipe_ingredients(recipe):
