@@ -707,7 +707,7 @@ class Inventory(models.Model):
             replacement = tryobj()
             if replacement:
                 return replacement
-       
+        
         return "Noone's Inventory (pk:{0})".format(self.pk)
 
 
