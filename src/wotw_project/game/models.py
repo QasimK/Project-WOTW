@@ -319,7 +319,12 @@ class Item(models.Model):
         prop = self.itemproperty_set.get(name=ItemProperty.HEALTH_HEALED)
         return int(prop.value)
     
-    def get_item_actions_list(self):
+    def get_props(self):
+        """Return all properties in format [(nice name, value), ...]"""
+        props = self.itemproperty_set.all()
+        return [(prop.get_name_display(), prop.value) for prop in props]
+    
+    def get_item_actions(self):
         """Return a list of [item_action object, display text]"""
         return [(i.item_action, i.display_text) for i in
                 self.itemitemactioninfo_set.all()]
