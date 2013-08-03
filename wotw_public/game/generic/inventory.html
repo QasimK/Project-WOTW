@@ -38,7 +38,7 @@
 			{% for item_action, display_text in item.get_item_actions %}
 				<li>Still have to check for incombat::</li>
 				{% if char.inventory_mode == char.INV_FULL_ACCESS %}
-					<li>Do action: {% action_link "inventory-item-action" display_text "item-name" item.name "action-name" item_action.func %}</li>
+					<li>{% action_link "inventory-item-action" display_text "item-name" item.name "action-name" item_action.func %}</li>
 				{% else %}
 					<li>Action (not currently doable): {{ display_text }}</li>
 				{% endif %}
