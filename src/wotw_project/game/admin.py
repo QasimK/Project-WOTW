@@ -8,7 +8,7 @@ from django.contrib import admin
 
 from wotw_project.game.models import (
     Character, GameViewProperty, Monster, ActiveMonster,
-    Item, ItemProperty,
+    Item, ItemProperty, ItemAction, ItemItemActionInfo,
     Shop, Inventory, InventoryItemInfo,
     Recipe, RecipeIngredientInfo, RecipeProductInfo)
 
@@ -39,18 +39,29 @@ def item_properties(item):
         s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
     return s
 
+def item_actions(item):
+    iiais = item.itemitemactioninfo_set.all()
+    s = ""
+    for iiai in iiais:
+        s += "[{}] ".format(iiai.display_text)
+    return s
+
 class ItemPropertyInfoInline(admin.TabularInline):
     model = ItemProperty
+    extra = 1
+    
+class ItemItemActionInfoInline(admin.TabularInline):
+    model = ItemItemActionInfo
     extra = 1
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_unlimited_stack', 'max_stack_size',
-                   'is_soulbound', item_properties)
+                   'is_soulbound', item_properties, item_actions)
     search_fields = ('name',)
     list_filter = ('itemproperty__name', 'is_unlimited_stack')
     fields = ('name', ('is_unlimited_stack', 'max_stack_size'),
-              ('is_soulbound',))
-    inlines = [ItemPropertyInfoInline]
+              ('is_soulbound',))#, 'item_actions')
+    inlines = [ItemPropertyInfoInline, ItemItemActionInfoInline]
 
 #class ItemPropertyAdmin(admin.ModelAdmin):
 #    list_display = ('name',)
@@ -127,6 +138,7 @@ admin.site.register(Monster, MonsterAdmin)
 admin.site.register(ActiveMonster)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(ItemProperty)#, ItemPropertyAdmin)
+admin.site.register(ItemAction)
 admin.site.register(Shop, ShopAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryItemInfo)
