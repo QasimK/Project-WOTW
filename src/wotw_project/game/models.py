@@ -434,21 +434,22 @@ class ItemProperty(models.Model):
 
 def get_item_action_choices():
     from wotw_project.game import item_actions
-    return [(f, f) for f in item_actions.ITEM_ACTIONS.keys()]
+    for f in item_actions.ITEM_ACTIONS.keys():
+        yield (f,f)
 
 class ItemAction(models.Model):
     """Actions that the character can do with the item"""
-    CHAR = 'c'
-    FIGHT = 'f'
-    INV_ITEM = 'i'
+    TAR_CHAR = 'c'
+    TAR_FIGHT = 'f'
+    TAR_INV_ITEM = 'i'
     TARGET_CHOICES = (
-        (CHAR, 'Character'),
-        (FIGHT, 'Fight'),
-        (INV_ITEM, 'Inventory Item')
+        (TAR_CHAR, 'Character'),
+        (TAR_FIGHT, 'Fight'),
+        (TAR_INV_ITEM, 'Inventory Item')
     )
     
-    func = models.CharField(max_length=100, unique=True)
-    #, choices=get_item_action_choices())    
+    func = models.CharField(max_length=100, unique=True,
+                            choices=get_item_action_choices())
     
     target = models.CharField(max_length=1, choices=TARGET_CHOICES)
     

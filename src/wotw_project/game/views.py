@@ -824,11 +824,11 @@ def a_inventory_item_action(request, char):
                 (char.fight is not None and the_item_action.allow_in_combat)):
             action_func = item_actions.ITEM_ACTIONS[action_name]
             
-            if item_action.target == item_action.CHAR:
+            if item_action.target == item_action.TAR_CHAR:
                 action_func(char, item, char)
-            elif item_action.target == item_action.FIGHT:
+            elif item_action.target == item_action.TAR_FIGHT:
                 pass
-            elif item_action.target == item_action.INV_ITEM:
+            elif item_action.target == item_action.TAR_INV_ITEM:
                 pass
             
             return redirect(char_inventory)
