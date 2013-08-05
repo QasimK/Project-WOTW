@@ -12,7 +12,7 @@ from wotw_project.game.views import ActionError
 ##@view_required("generic-fighting")
 ##@allowed_exit_views("generic-fighting", "generic-fight-win",
 #                    "generic-fight-lose")
-def generic_fight_attack(request, char):
+def generic_fight_attack(char, post):
     """Attack the monster the player is currently fighting."""
     
     def calculate_dmg(attacker, defender):
@@ -72,14 +72,14 @@ def generic_fight_attack(request, char):
 
 #@view_required("generic-fighting")
 #@allowed_exit_views("generic-fight-runaway")
-def generic_fight_runaway(request, char):
+def generic_fight_runaway(char, post):
     """Try to run away from the monster"""
     char.game_view = "generic-fight-runaway"
     char.save()
 
 #@view_required("generic-fight-runaway", "generic-fight-loot")
 #@allowed_exit_views("*")
-def generic_fight_return(request, char):
+def generic_fight_return(char, post):
     """Return to before the fight view specified by GVP:return_loc
     
     This is a generic way to leave a fight cleanly at any stage."""
@@ -109,21 +109,21 @@ def generic_fight_return(request, char):
 
 #@view_required("generic-fight-win")
 #@allowed_exit_views("generic-fight-loot")
-def generic_fight_goto_loot(request, char):
+def generic_fight_goto_loot(char, post):
     char.game_view = "generic-fight-loot"
     char.save()
 
 
 #@view_required("generic-fight-loot")
 #@allowed_exit_views("generic-fight-loot")
-def generic_fight_loot_item(request, char):
+def generic_fight_loot_item(char, post):
     """Loot an item from the monster
     
     POST:
         -loot_type: weapon/armour/weapon-replace/armour-replace
     """
     
-    loot_type = request.POST["type"]
+    loot_type = post["type"]
     
     if loot_type in ("weapon", "weapon-replace"):
         if char.fight.looted_weapon:

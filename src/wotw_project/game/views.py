@@ -65,7 +65,10 @@ def create_error(char, err, level=0):
 
 game_map_loc = os.path.join(settings.GAME_MAP_LOCATION, "game_map.txt")
 if settings.DEBUG:
-    os.remove(game_map_loc)
+    try:
+        os.remove(game_map_loc)
+    except WindowsError: #file does not exist
+        pass
 
 #Decorator
 def view_required(*views):
@@ -463,8 +466,8 @@ def game_action_resolver(request):
         return ret
 
 
-@view_required("generic-fight-lose")
-@allowed_exit_views("generic-resurrected")
+#@view_required("generic-fight-lose")
+#@allowed_exit_views("generic-resurrected")
 def a_generic_resurrect(char, post):
     """Bring the character back to life
     Requires GVPs:
@@ -477,8 +480,8 @@ def a_generic_resurrect(char, post):
     char.game_view = "generic-resurrected"
     char.save()
     
-@view_required("generic-resurrected")
-@allowed_exit_views("*")
+#@view_required("generic-resurrected")
+#@allowed_exit_views("*")
 def a_generic_resurrected_return(char, post):
     """Return to the return_loc after resurrection
     Requires GVPs:
@@ -489,8 +492,8 @@ def a_generic_resurrected_return(char, post):
     return_loc_gvp.delete()
 
 
-@view_required('*')
-@allowed_exit_views('*')
+#@view_required('*')
+#@allowed_exit_views('*')
 def a_crafting_make(request, char):
     """Make an item
     
