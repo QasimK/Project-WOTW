@@ -15,7 +15,7 @@ The target must be a Character (for now).
 from wotw_project.game import models
 
 
-def IASelfHealOnce(char, item, target):
+def ia_self_heal_once(char, item, target):
     """Heal the target and destroy the item
     
     Uses the property "health healed"
@@ -36,5 +36,5 @@ def IASelfHealOnce(char, item, target):
 
 
 ITEM_ACTIONS = {
-    "self heal; one use": IASelfHealOnce
+    "self heal; one use": ia_self_heal_once
 }
