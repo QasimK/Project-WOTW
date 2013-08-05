@@ -768,6 +768,11 @@ class RecipeProductInfo(models.Model):
     quantity = models.IntegerField(default=1)
 
 
+class GameView(models.Model):
+    name = models.CharField(max_length=100)
+    can_goto_views = models.ManyToManyField('self', symmetrical=False)
+
+
 class Message(models.Model):
     """A message to the player informing him of events across sessions/pages"""
     character = models.ForeignKey(Character)
