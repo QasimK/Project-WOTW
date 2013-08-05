@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from wotw_project.game import models, item_actions
-from wotw_project.game.models import RecipeIngredientInfo
 
 """
 Note:
@@ -36,6 +35,17 @@ def get_char(request):
 def create_msg(char, msg):
     """Just a message"""
     models.Message.objects.create(character=char, body=msg)
+
+class ActionError(Exception):
+    """An action which should not have been an option occurred
+    
+    Either the user was poking around or I messed up"""
+    
+    def __init__(self, err):
+        self.err = err
+    
+    def __str__(self):
+        return self.err
 
 def create_error(char, err, level=0):
     """Create an error with a priority.
@@ -366,7 +376,7 @@ def game_view_resolver(request):
 
 #---Game Actions
 """
-Note all game actions must:
+Note all game a must:
     - Ensure the character game view and GVPs (Game View Properties) are
     appropriate
     - Do stuff
@@ -384,340 +394,78 @@ If there are errors then:
 
 @login_required
 def game_action_resolver(request):
+    """Resolve game a
+    
+    Data passed in through POST:
+    - action_name
+    - Whatever other variables are used by the action"""
+    
+    from wotw_project.game import actions as a
+    
     def NIA(request, char):
         """Temporary function to indicate the game action is not implemented."""
         msg = "This action (%s) is not implemented"%action_name
-        redir = create_error(char, msg, 5)
-        return redir
+        models.Message.objects.create(character=char, body=msg)
+        return redirect(game_error)
     
     registered_actions = {
-        "generic-purchase-item": a_generic_purchase_item,
-        "generic-leave-shop": a_generic_leave_shop,
-        "generic-fight-attack": a_generic_fight_attack,
-        "generic-fight-runaway": a_generic_fight_runaway,
-        "generic-fight-return": a_generic_fight_return,
-        "generic-fight-goto-loot": a_generic_fight_goto_loot,
-        "generic-fight-loot-item": a_generic_fight_loot_item,
+        "generic-purchase-item": a.generic_shop_purchase,
+        "generic-leave-shop": a.generic_shop_leave,
+        "generic-fight-attack": a.generic_fight_attack,
+        "generic-fight-runaway": a.generic_fight_runaway,
+        "generic-fight-return": a.generic_fight_return,
+        "generic-fight-goto-loot": a.generic_fight_goto_loot,
+        "generic-fight-loot-item": a.generic_fight_loot_item,
         "generic-resurrect": a_generic_resurrect,
         "generic-resurrected-return": a_generic_resurrected_return,
-        "inventory-drop-item": a_inventory_drop_item,
-        "inventory-item-action": a_inventory_item_action,
+        "inventory-drop-item": a.inventory_drop_item,
+        "inventory-item-action": a.inventory_item_action,
         "crafting-make": a_crafting_make,
-        "village-explore": a_village_explore,
-        "village-return": a_village_return,
-        "village-return-from-found-gold": a_village_return_from_found_gold,
-        "village-goto-general-shop": a_village_goto_general_shop,
-        "village-goto-herb-shop": a_village_goto_herb_shop,
-        "village-goto-market": a_village_goto_market,
-        "village-leave-market": a_village_leave_market
+        "village-explore": a.village_explore,
+        "village-return": a.village_return,
+        "village-return-from-found-gold": a.village_return_from_found_gold,
+        "village-goto-general-shop": a.village_goto_general_shop,
+        "village-goto-herb-shop": a.village_goto_herb_shop,
+        "village-goto-market": a.village_goto_market,
+        "village-leave-market": a.village_leave_market
     }
     
     char = get_char(request)
-    #All data is passed in through post
-    if request.method == "POST":
-        #Resolve POST data into an action
-        try:
-            action_name = request.POST["action_name"]
-        except IndexError:
-            msg="Action POST data incorrect- no 'action_name' defined.\
-                You shouldn't see this."
-            redir = create_error(char, msg, 5)
-            return redir
-        
-        #Do action
-        char = get_char(request)
-        try:
-            the_action = registered_actions[action_name]
-        except KeyError:
-            #Need to display error somehow, temporary:
-            err="Unknown game-action: '%s'" % action_name
-            models.Message.objects.create(character=char, body=err)
-            return redirect(game_error)
-        
-        ret = the_action(request, char)
-        if ret == None:
-            return redirect(game_view_resolver)
-        else:
-            return ret
-
-    
-    else: #NOT POST
-        msg="All game actions done through POST.\
-            You shouldn't see this error."
+    #Resolve POST data into an action
+    try:
+        action_name = request.POST["action_name"]
+    except IndexError:
+        msg="Action POST data incorrect- no 'action_name' defined.\
+            You shouldn't see this."
         redir = create_error(char, msg, 5)
         return redir
     
-
-@view_required("generic-shopping")
-@allowed_exit_views("generic-shopping")
-def a_generic_purchase_item(request, char):
-    """Purchase an item at any shop
-    
-    Requires POST information:
-    - item-name=Name of item
-    
-    Requires GVPs:
-    - shop_name=Name of shop
-    """
-    
-    #Check GVPs first
-    shop_name = char.get_gvp("shop_name").value
+    #Get action
+    char = get_char(request)
     try:
-        shop = models.Shop.objects.get(name=shop_name)
-    except models.Shop.DoesNotExist:
-        err = "The shop you are trying to purchase from does not exist"
-        redir = create_error(char, err, 5)
-        return redir
+        the_action = registered_actions[action_name]
+    except KeyError:
+        #Need to display error somehow, temporary:
+        err="Unknown game-action: '{}'".format(action_name)
+        models.Message.objects.create(character=char, body=err)
+        return redirect(game_error)
     
-    item_name = request.POST["item-name"]
-    the_iii = shop.inventory.get_iiis().filter(item__name=item_name)[0]
-    
-    #To purchase an item:
-    #1-Ensure player has the inventory space (check stack_size if needed)
-    #2-Ensure player has enough money
-    #3-Subtract money
-    #4-Decrease item count from shop inventory (remove item if necessary)
-    #5-Add item to player's inventory (+1 to existing stack preferred)
-    
-    #1:
-    #Check if they already have a stack of that
-    the_char_iii = None
-    char_iiis = char.inventory.get_iiis().filter(item__name=item_name)
-    for char_iii in char_iiis:
-        if char_iii.item.is_unlimited_stack:
-            the_char_iii = char_iii
-            break
-        elif char_iii.stack_size < char_iii.item.max_stack_size:
-            the_char_iii = char_iii
-            break
-    else: #Did not break for
-        #No stacks with enough space, new new slot.
-        if not char.inventory.has_free_slot():
-            err = "You do not have the inventory space to purchase %s.\
-            You should not see this error."%item_name
-            return create_error(char, err, 5)
-    
-    #2:
-    item_cost = the_iii.item.prop_cost()
-    if not isinstance(item_cost, int):
-        err = "This item is not for sale apparently?!\
-        You should not see this error."
-        return create_error(char, err, 5)
-    
-    if char.gold < item_cost:
-        err = "You do not have enough money to purchase this item\
-        You should not see this error."
-        return create_error(char, err, 5)
-    
-    #3:
-    char.gold -= item_cost
-    char.save()
-    
-    #4:
-    if the_iii.stack_size == 1:
-        the_iii.delete()
-    else:
-        the_iii.stack_size -= 1
-        the_iii.save()
-    
-    #5:
-    if the_char_iii: #Existing non-full stack
-        the_char_iii.stack_size += 1
-        the_char_iii.save()
-    else:
-        item_object = models.Item.objects.get(name=item_name)
-        new_char_iii = models.InventoryItemInfo(
-            inventory=char.inventory, item=item_object, stack_size=1)
-        new_char_iii.save()
-
-
-@view_required("generic-fighting")
-@allowed_exit_views("generic-fighting", "generic-fight-win",
-                    "generic-fight-lose")
-def a_generic_fight_attack(request, char):
-    """Attack the monster the player is currently fighting."""
-    
-    def calculate_dmg(attacker, defender):
-        """Calculate the damage done by the attacker to the defender"""
-        att_dmg_max = attacker.weapon.prop_damage()
-        def_abs_max = defender.armour.prop_damage_absorbed()
-        att_dmg = random.randint(0, att_dmg_max)
-        def_abs = random.randint(0, def_abs_max)
-        damage_done = max(att_dmg - def_abs, 0)
-        return int(damage_done)
-    
-    #Procedure
-    #1-Damage monster
-    #2-Check if dead -> goto fight_looting
-    #3-Damage Character
-    #4-Check if dead -> goto fight_lose -> player_death
-    
-    #1-Damage to monster
-    char_damage = calculate_dmg(char, char.fight.monster_info)
-    
+    #Do action
     try:
-        char.get_gvp("char_attack").delete()
-    except models.GameViewProperty.DoesNotExist:
-        pass
+        ret = the_action(char, request.POST)
+    except ActionError as error:
+        models.Message.objects.create(character=char, body=str(error))
+        return redirect(game_error)
     
-    models.GameViewProperty.objects.create(
-        char=char, name="char_attack", value=char_damage)
-    
-    char.fight.hp = max(0, char.fight.hp - char_damage)
-    char.fight.save()
-    
-    #2-Is the monster dead now?
-    if char.fight.hp == 0:
-        char.game_view = "generic-fight-win"
-        char.save()
+    if ret is None:
+        return redirect(game_view_resolver)
     else:
-        #3-Damage Character
-        mons_damage = calculate_dmg(char.fight.monster_info, char)
-        
-        try:
-            char.get_gvp("mons_attack").delete()
-        except models.GameViewProperty.DoesNotExist:
-            pass
-        
-        models.GameViewProperty.objects.create(
-            char=char, name="mons_attack", value=mons_damage)
-        
-        char.hp = max(0, char.hp - mons_damage)
-        char.save()
-        
-        #4-Is player dead?
-        if char.hp == 0:
-            char.game_view = "generic-fight-lose"
-            char.save()
-    
-
-
-@view_required("generic-fighting")
-@allowed_exit_views("generic-fight-runaway")
-def a_generic_fight_runaway(request, char):
-    """Try to run away from the monster"""
-    char.game_view = "generic-fight-runaway"
-    char.save()
-
-@view_required("generic-fight-runaway", "generic-fight-loot")
-@allowed_exit_views("*")
-def a_generic_fight_return(request, char):
-    """Return to before the fight view specified by GVP:return_loc
-    
-    This is a generic way to leave a fight cleanly at any stage."""
-    return_loc = char.get_gvp("return_loc")
-    
-    char.end_fight()
-    char.game_view = return_loc.value
-    char.save()
-    
-    return_loc.delete()
-    
-    if char.fight != None:
-        active_monster = char.fight #Potentially destroys char by cascade
-        char.fight = None           #When deleting the monster
-        char.save()
-        active_monster.delete() 
-    
-    #Delete various infos    
-    try:
-        char.get_gvp("char_attack").delete()
-    except models.GameViewProperty.DoesNotExist:
-        pass
-    try:
-        char.get_gvp("mons_attack").delete()
-    except models.GameViewProperty.DoesNotExist:
-        pass
-
-@view_required("generic-fight-win")
-@allowed_exit_views("generic-fight-loot")
-def a_generic_fight_goto_loot(request, char):
-    char.game_view = "generic-fight-loot"
-    char.save()
-
-
-@view_required("generic-fight-loot")
-@allowed_exit_views("generic-fight-loot")
-def a_generic_fight_loot_item(request, char):
-    """Loot an item from the monster
-    
-    POST:
-        -loot_type: weapon/armour/weapon-replace/armour-replace
-    """
-    
-    loot_type = request.POST["type"]
-    
-    if loot_type in ("weapon", "weapon-replace"):
-        if char.fight.looted_weapon:
-            err = "Major Error: You have already looted the weapon."
-            return create_error(char, err, 5)
-        elif char.fight.monster_info.weapon.is_soulbound:
-            err = "Major Error: The weapon is soulbound, you cannot loot it."
-            return create_error(char, err, 5)
-        elif loot_type == "weapon":
-            weapon = char.fight.monster_info.weapon
-            if char.inventory.is_space_for_item(weapon, 1):
-                char.inventory.add_item(weapon, 1)
-                char.fight.looted_weapon = True
-                char.fight.save()
-            else:
-                err = "You do not have enough inventory space to loot that."
-                return create_error(char, err, 0)
-        elif loot_type == "weapon-replace":
-            weapon = char.fight.monster_info.weapon
-            char.weapon = weapon
-            char.fight.looted_weapon = True
-            char.save()
-            char.fight.save()
-    elif loot_type in ("armour", "armour-replace"):
-        if char.fight.looted_armour:
-            err = "Major Error: You have already looted the armour."
-            return create_error(char, err, 5)
-        elif char.fight.monster_info.armour.is_soulbound:
-            err = "Major Error: The armour is soulbound, you cannot loot it."
-            return create_error(char, err, 5)
-        elif loot_type == "armour":
-            armour = char.fight.monster_info.armour
-            if char.inventory.is_space_for_item(armour, 1):
-                char.inventory.add_item(armour, 1)
-                char.fight.looted_armour = True
-                char.fight.save()
-            else:
-                err = "You do not have enough inventory space to loot that."
-                create_error(char, err, 0)
-        elif loot_type == "armour-replace":
-            armour = char.fight.monster_info.armour
-            char.armour = armour
-            char.fight.looted_armour = True
-            char.save()
-            char.fight.save()
-    else:
-        err = "Major Error: You can only loot a weapon or an armour."
-        return create_error(char, err, 5)
-    
-
-
-@view_required("generic-shopping")
-@allowed_exit_views("*")
-def a_generic_leave_shop(request, char):
-    """Leave the current shop
-    
-    Requires GVPs:
-    - return_location=Name of view to return to
-    """
-    
-    return_loc = char.get_gvp("return_location")
-    
-    for gvp in char.get_gvps().all():
-        gvp.delete()
-    
-    char.game_view = return_loc.value
-    char.save()
+        return ret
 
 
 @view_required("generic-fight-lose")
 @allowed_exit_views("generic-resurrected")
-def a_generic_resurrect(request, char):
+def a_generic_resurrect(char, post):
     """Bring the character back to life
     Requires GVPs:
     - return_location=Name of view to return to"""
@@ -731,7 +479,7 @@ def a_generic_resurrect(request, char):
     
 @view_required("generic-resurrected")
 @allowed_exit_views("*")
-def a_generic_resurrected_return(request, char):
+def a_generic_resurrected_return(char, post):
     """Return to the return_loc after resurrection
     Requires GVPs:
     - return_location=Name of view to return to"""
@@ -739,111 +487,6 @@ def a_generic_resurrected_return(request, char):
     char.game_view = return_loc_gvp.value
     char.save()
     return_loc_gvp.delete()
-
-
-@view_required("*")
-@allowed_exit_views("*")
-def a_inventory_drop_item(request, char):
-    """Drop an item from the inventory
-    
-    Requires POST:
-        item-name: the item name
-        amount: number/"all"
-    """
-    
-    if char.inventory_mode != char.INV_FULL_ACCESS:
-        err = "Major error: Cannot drop item without full inventory access"
-        ret = create_error(char, err, 5)
-        if ret:
-            return ret
-    
-    item_name = request.POST["item-name"]
-    amount = request.POST["amount"]
-    
-    try:
-        item = models.Item.objects.get(name=item_name)
-    except models.Item.DoesNotExist:
-        err = "Major error: Dropping item,"+\
-        "Item not in inventory- you should not see this"
-        return create_error(char, err, 5)
-    
-    if amount == "all":
-        pass_amount = char.inventory.num_item(item)
-    else:
-        try:
-            pass_amount = int(amount)
-        except ValueError:
-            err = "Major error: Dropping item, amount not specified properly"+\
-            " amount({0})".format(amount)
-            return create_error(char, err, 5)
-    
-    char.inventory.remove_item(item, pass_amount)
-    
-    return redirect(char_inventory)
-
-@view_required("*")
-@allowed_exit_views("*")
-def a_inventory_item_action(request, char):
-    """Do an item action from the inventory
-    
-    Requires POST:
-        item-name: the item name
-        action-name: name of action"
-    """
-    #TODO: Doing item actions
-    #Should I have separate for combat actions and for inventory actions?
-    
-    if char.inventory_mode != char.INV_FULL_ACCESS:
-        err = "Major error: Cannot do an item action without full inventory access"
-        ret = create_error(char, err, 5)
-        if ret:
-            return ret
-    
-    item_name = request.POST["item-name"]
-    action_name = request.POST["action-name"]
-    
-    try: #Ensure we have the item
-        item = models.Item.objects.get(name=item_name)
-    except models.Item.DoesNotExist:
-        err = "Major error: Item action, "+\
-        "Item not in inventory - you should not be seeing this error."
-        create_error(char, err, 5)
-    
-    assert isinstance(item, models.Item)
-    
-    action_list = item.get_item_actions()
-    the_item_action = None
-    for item_action, display_text in action_list:
-        if item_action.func == action_name:
-            the_item_action = item_action
-            assert isinstance(the_item_action, models.ItemAction)
-            break
-    
-    if the_item_action:
-        if((char.fight is None and the_item_action.allow_out_combat) or
-                (char.fight is not None and the_item_action.allow_in_combat)):
-            action_func = item_actions.ITEM_ACTIONS[action_name]
-            
-            if item_action.target == item_action.TAR_CHAR:
-                action_func(char, item, char)
-            elif item_action.target == item_action.TAR_FIGHT:
-                pass
-            elif item_action.target == item_action.TAR_INV_ITEM:
-                pass
-            
-            return redirect(char_inventory)
-        else:
-            err = "Major error: Cannot use item in/out of combat"
-            create_error(char, err, 5)
-    
-    #No action_list or no corresponding action
-    err = "Major error: Item action, "+\
-    "The item does not have that action - you should not be seeing this error."
-    ret = create_error(char, err, 5)
-    if ret is not None:
-        return ret
-    
-    return redirect(char_inventory)
 
 
 @view_required('*')
@@ -887,153 +530,7 @@ def a_crafting_make(request, char):
             create_msg(char, msg)
     
     return redirect(crafting)
-    
 
-@view_required("village-in", "village-explore-nothing", "village-in-market")
-@allowed_exit_views("village-found-gold", "village-explore-nothing",
-                    "generic-fighting")
-def a_village_explore(request, char):
-    
-    #Get rid of any current GVPs
-    for gvp in char.get_gvps().all():
-        gvp.delete()
-    
-    
-    #Generate a random event
-    def eve_found_gold():
-        char.game_view = "village-found-gold"
-        
-        #Amount found
-        randgold = min(max(int(random.gauss(10, 3)), 0), 20)
-        
-        char.gold += randgold
-        char.save()
-        
-        randnum = random.randint(0, 1000000)
-        text_gvp = models.GameViewProperty(char=char,
-            name="text_selection", value=str(randnum))
-        text_gvp.save()
-        
-        gold_gvp = models.GameViewProperty(char=char,
-            name="gold", value=str(randgold))
-        gold_gvp.save()
-        
-    def eve_nothing_much():
-        char.game_view = "village-explore-nothing"
-        char.save()
-        
-        #text_selection
-        randtext = random.randint(0, 1000000)
-        models.GameViewProperty.objects.create(
-            char=char, name="text_selection", value=randtext)
-    
-    def eve_fight():
-        potential_monsters = [
-            "Rabid Dog",
-            "Lone Wolf",
-            "Thief",
-            "Vicious Bear"
-        ]
-        
-        monster = random.choice(potential_monsters)
-        char.start_fight(monster)
-        
-        #Create the return location
-        models.GameViewProperty.objects.create(
-            char=char, name="return_loc", value="village-in")
-        
-        char.game_view = "generic-fighting"
-        char.save()
-        
-    def eve_heal():
-        pass
-    def eve_found_item():
-        pass
-    
-    events = {
-        eve_found_gold: 60,
-        eve_nothing_much: 100,
-        eve_fight: 400,
-        eve_heal: 0,
-        eve_found_item: 0,
-    }
-    
-    max_chance = sum(events.itervalues())
-    roll = random.randint(0, max_chance-1)
-    
-    for event_function, chance in events.iteritems():
-        roll -= chance
-        if roll < 0:
-            return event_function()
-    
-    err = "Major error: Village explore did not give any event!"
-    return create_error(char, err, 10)
-
-
-@view_required("village-explore-nothing")
-@allowed_exit_views("village-in")
-def a_village_return(request, char):
-    char.game_view = "village-in"
-    char.save()
-    
-    for gvp in char.get_gvps().all():
-        gvp.delete()
-
-
-@view_required("village-found-gold")
-@allowed_exit_views("village-in")
-def a_village_return_from_found_gold(request, char):
-    char.game_view = "village-in"
-    char.save()
-    
-    for gvp in char.get_gvps().all():
-        gvp.delete()
-
-
-@view_required("village-in-market")
-@allowed_exit_views("generic-shopping")
-def a_village_goto_general_shop(request, char):
-    char.game_view = "generic-shopping"
-    char.save()
-    
-    #GVPs
-    shop = models.Shop.objects.get(name="Village Shop")
-    shop_name = models.GameViewProperty(char=char, name="shop_name",
-                                        value=shop)
-    return_loc = models.GameViewProperty(char=char, name="return_location",
-                                         value="village-in-market")
-    
-    shop_name.save()
-    return_loc.save()
-
-@view_required("village-in-market")
-@allowed_exit_views("generic-shopping")
-def a_village_goto_herb_shop(request, char):
-    char.game_view = "generic-shopping"
-    char.save()
-    
-    #GVPs
-    shop = models.Shop.objects.get(name="Village Herbology Store")
-    shop_name = models.GameViewProperty(char=char, name="shop_name",
-                                        value=shop)
-    return_loc = models.GameViewProperty(char=char, name="return_location",
-                                         value="village-in-market")
-    
-    shop_name.save()
-    return_loc.save()
-
-
-@view_required("village-in")
-@allowed_exit_views("village-in-market")
-def a_village_goto_market(request, char):
-    char.game_view = "village-in-market"
-    char.save()
-
-@view_required("village-in-market")
-@allowed_exit_views("village-in")
-def a_village_leave_market(request, char):
-    char.game_view = "village-in"
-    char.save()
 
 
 @login_required
