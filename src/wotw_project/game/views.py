@@ -394,7 +394,7 @@ If there are errors then:
 
 @login_required
 def game_action_resolver(request):
-    """Resolve game a
+    """Resolve game actions
     
     Data passed in through POST:
     - action_name
