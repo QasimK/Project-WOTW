@@ -27,7 +27,7 @@ def ia_self_heal_once(char, item, target):
         target.save()
         target.inventory.remove_item(item)
         
-        msg = "You ate the whatever and healed upto {} HP.".format(heal)
+        msg = "You healed upto {} HP.".format(heal)
         models.Message.objects.create(character=char, body=msg)
     else:
         err = "You are already at full hp."
