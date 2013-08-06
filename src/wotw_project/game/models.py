@@ -768,7 +768,7 @@ class RecipeProductInfo(models.Model):
     quantity = models.IntegerField(default=1)
 
 
-class GameView(models.Model):
+class Location(models.Model):
     name = models.CharField(max_length=100)
     can_goto_views = models.ManyToManyField('self', symmetrical=False)
 
