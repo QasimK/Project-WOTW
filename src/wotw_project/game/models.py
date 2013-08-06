@@ -772,6 +772,9 @@ class Location(models.Model):
     name = models.CharField(max_length=100)
     can_goto_views = models.ManyToManyField('self', symmetrical=False,
                                             blank=True, null=True)
+    
+    def __unicode__(self):
+        return self.name
 
 
 class Message(models.Model):

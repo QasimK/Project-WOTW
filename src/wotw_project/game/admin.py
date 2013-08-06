@@ -29,11 +29,14 @@ class MonsterAdmin(admin.ModelAdmin):
 
 
 def item_properties(item):
-    props = item.itemproperty_set.all()
-    s = ""
-    for prop in props:
-        s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
-    return s
+    lst = item.itemproperty_set.values_list('get_name_display', 'value')
+    return lst
+    #return "[{}: {}] ".format(
+    #props = item.itemproperty_set.all()
+    #s = ""
+    #for prop in props:
+    #    s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
+    #return s
 
 def item_actions(item):
     iiais = item.itemitemactioninfo_set.all()
@@ -126,7 +129,14 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInfoInline, RecipeProductInfoInline)
 
 
-#class LocationAdmin(admin.):
+def get_goto_locations(location):
+    return ', '.join(location.can_goto_views.values_list('name', flat=True))
+get_goto_locations.short_description = 'Allowed locations to move to'
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('name', get_goto_locations)
+    
+
 
 
 admin.site.register(models.Character)
@@ -140,4 +150,4 @@ admin.site.register(models.Inventory, InventoryAdmin)
 admin.site.register(models.InventoryItemInfo)
 admin.site.register(models.GameViewProperty, GameViewPropertyAdmin)
 admin.site.register(models.Recipe, RecipeAdmin)
-admin.site.register(models.Location)
+admin.site.register(models.Location, LocationAdmin)
