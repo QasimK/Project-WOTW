@@ -770,7 +770,8 @@ class RecipeProductInfo(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=100)
-    can_goto_views = models.ManyToManyField('self', symmetrical=False)
+    can_goto_views = models.ManyToManyField('self', symmetrical=False,
+                                            blank=True, null=True)
 
 
 class Message(models.Model):

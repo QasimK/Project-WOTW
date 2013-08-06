@@ -6,11 +6,7 @@ Created on 1 Sep 2010
 
 from django.contrib import admin
 
-from wotw_project.game.models import (
-    Character, GameViewProperty, Monster, ActiveMonster,
-    Item, ItemProperty, ItemAction, ItemItemActionInfo,
-    Shop, Inventory, InventoryItemInfo,
-    Recipe, RecipeIngredientInfo, RecipeProductInfo)
+from wotw_project.game import models
 
 def wepinfo(obj):
     s = "%s (%s)" % (str(obj.weapon), str(obj.weapon.prop_damage))
@@ -47,11 +43,11 @@ def item_actions(item):
     return s
 
 class ItemPropertyInfoInline(admin.TabularInline):
-    model = ItemProperty
+    model = models.ItemProperty
     extra = 1
     
 class ItemItemActionInfoInline(admin.TabularInline):
-    model = ItemItemActionInfo
+    model = models.ItemItemActionInfo
     extra = 1
 
 class ItemAdmin(admin.ModelAdmin):
@@ -67,11 +63,11 @@ class ItemAdmin(admin.ModelAdmin):
 #    list_display = ('name',)
 
 class InventoryItemInfoInline(admin.TabularInline):
-    model = InventoryItemInfo
+    model = models.InventoryItemInfo
     extra = 0
 
 class ShopInline(admin.StackedInline):
-    model = Shop
+    model = models.Shop
     fields = ('name',)
     readonly_fields = ('name',)
     has_add_permission = lambda s,r,o=None: False
@@ -80,7 +76,7 @@ class ShopInline(admin.StackedInline):
     extra = 0
 
 class CharInline(admin.StackedInline):
-    model = Character
+    model = models.Character
     fields = (('user_account', 'inventory_mode'),)
     readonly_fields = ('user_account', 'inventory_mode')
     has_add_permission = lambda s,r,o=None: False
@@ -90,8 +86,8 @@ class CharInline(admin.StackedInline):
 
 def inventory_owners(inventory):
     owners = []
-    owners.extend(Character.objects.filter(inventory__pk=inventory.pk))
-    owners.extend(Shop.objects.filter(inventory__pk=inventory.pk))
+    owners.extend(models.Character.objects.filter(inventory__pk=inventory.pk))
+    owners.extend(models.Shop.objects.filter(inventory__pk=inventory.pk))
     return ''.join(['['+str(owner)+'] ' for owner in owners])
 
 class InventoryAdmin(admin.ModelAdmin):
@@ -118,11 +114,11 @@ def get_recipe_products(recipe):
 get_recipe_products.short_description = 'Products'
 
 class RecipeIngredientInfoInline(admin.TabularInline):
-    model = RecipeIngredientInfo
+    model = models.RecipeIngredientInfo
     extra = 0
 
 class RecipeProductInfoInline(admin.TabularInline):
-    model = RecipeProductInfo
+    model = models.RecipeProductInfo
     extra = 0
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -130,14 +126,18 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInfoInline, RecipeProductInfoInline)
 
 
-admin.site.register(Character)
-admin.site.register(Monster, MonsterAdmin)
-admin.site.register(ActiveMonster)
-admin.site.register(Item, ItemAdmin)
-admin.site.register(ItemProperty)#, ItemPropertyAdmin)
-admin.site.register(ItemAction)
-admin.site.register(Shop, ShopAdmin)
-admin.site.register(Inventory, InventoryAdmin)
-admin.site.register(InventoryItemInfo)
-admin.site.register(GameViewProperty, GameViewPropertyAdmin)
-admin.site.register(Recipe, RecipeAdmin)
+#class LocationAdmin(admin.):
+
+
+admin.site.register(models.Character)
+admin.site.register(models.Monster, MonsterAdmin)
+admin.site.register(models.ActiveMonster)
+admin.site.register(models.Item, ItemAdmin)
+admin.site.register(models.ItemProperty)#, ItemPropertyAdmin)
+admin.site.register(models.ItemAction)
+admin.site.register(models.Shop, ShopAdmin)
+admin.site.register(models.Inventory, InventoryAdmin)
+admin.site.register(models.InventoryItemInfo)
+admin.site.register(models.GameViewProperty, GameViewPropertyAdmin)
+admin.site.register(models.Recipe, RecipeAdmin)
+admin.site.register(models.Location)
