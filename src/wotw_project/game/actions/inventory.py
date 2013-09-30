@@ -9,8 +9,6 @@ from django.shortcuts import redirect
 from wotw_project.game import models, item_actions
 from wotw_project.game.views import ActionError, char_inventory
 
-#@view_required("*")
-#@allowed_exit_views("*")
 def inventory_item_action(char, post):
     """Do an item action from the inventory
     
@@ -20,7 +18,8 @@ def inventory_item_action(char, post):
     """
     
     if char.inventory_mode != char.INV_FULL_ACCESS:
-        err = "Major error: Cannot do an item action without full inventory access"
+        err = "Major error: Cannot do an item action without full inventory\
+        access"
         raise ActionError(err)
     
     item_name = post["item-name"]
@@ -68,8 +67,6 @@ def inventory_item_action(char, post):
     raise ActionError(err)
 
 
-#@view_required("*")
-#@allowed_exit_views("*")
 def inventory_drop_item(char, post):
     """Drop an item from the inventory
     
