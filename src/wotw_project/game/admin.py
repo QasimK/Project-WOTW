@@ -29,14 +29,11 @@ class MonsterAdmin(admin.ModelAdmin):
 
 
 def item_properties(item):
-    lst = item.itemproperty_set.values_list('get_name_display', 'value')
-    return lst
-    #return "[{}: {}] ".format(
-    #props = item.itemproperty_set.all()
-    #s = ""
-    #for prop in props:
-    #    s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
-    #return s
+    props = item.itemproperty_set.all()
+    s = ""
+    for prop in props:
+        s += "[{}: {}] ".format(prop.get_name_display(), str(prop.value))
+    return s
 
 def item_actions(item):
     iiais = item.itemitemactioninfo_set.all()
