@@ -36,7 +36,7 @@ def inventory_item_action(char, post):
     
     action_list = item.get_item_actions()
     the_item_action = None
-    for item_action, display_text in action_list:
+    for item_action, display_text in action_list:  # @UnusedVariable
         if item_action.func == action_name:
             the_item_action = item_action
             assert isinstance(the_item_action, models.ItemAction)
