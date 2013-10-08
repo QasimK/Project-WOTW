@@ -25,7 +25,7 @@ def ia_self_heal_once(char, item, target):
         heal = item.prop_health_healed
         target.hp = min(target.max_hp, target.hp + heal)
         target.save()
-        target.inventory.remove_item(item)
+        char.inventory.remove_item(item)
         
         msg = "You healed upto {} HP.".format(heal)
         models.Message.objects.create(character=char, body=msg)
