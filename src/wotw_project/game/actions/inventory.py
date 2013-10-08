@@ -41,6 +41,9 @@ def inventory_item_action(char, post):
             the_item_action = item_action
             assert isinstance(the_item_action, models.ItemAction)
             break
+    else:
+        err = "Major error: Item '{}' does not have the action '{}'"
+        raise ActionError(err.format(item_name, action_name))
     
     if the_item_action:
         if char.fight is None and not the_item_action.allow_out_combat:
@@ -55,9 +58,10 @@ def inventory_item_action(char, post):
             if item_action.target == item_action.TAR_CHAR:
                 action_func(char, item, char)
             elif item_action.target == item_action.TAR_FIGHT:
-                pass
+                err = "Major error: Cannot use combat items from inventory"
+                raise ActionError(err)
             elif item_action.target == item_action.TAR_INV_ITEM:
-                pass
+                raise NotImplementedError("")
             
             return redirect(char_inventory)
     
