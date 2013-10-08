@@ -35,6 +35,19 @@ def ia_self_heal_once(char, item, target):
         return err
 
 
+def ia_damage_once(char, item, target):
+    """Damage the target and destroy the item
+    
+    **This does NOT handle what happens to the target when at 0hp**
+    
+    Uses the property "damage"
+    """
+    
+    target.hp = max(0, target.hp - item.prop_damage)
+    target.save()
+    char.inventory.remove_item(item)
+
 ITEM_ACTIONS = {
-    "self heal; one use": ia_self_heal_once
+    "self heal; one use": ia_self_heal_once,
+    "damage target; one use": ia_damage_once
 }
