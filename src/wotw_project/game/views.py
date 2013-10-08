@@ -494,14 +494,14 @@ def a_generic_resurrected_return(char, post):
 
 #@view_required('*')
 #@allowed_exit_views('*')
-def a_crafting_make(request, char):
+def a_crafting_make(char, post):
     """Make an item
     
     Requires POST:
         recipe-name: Name of recipe that is being used
     """
     
-    recipe_name = request.POST['recipe-name']
+    recipe_name = post['recipe-name']
     
     try:
         recipe = models.Recipe.objects.get(name=recipe_name)
