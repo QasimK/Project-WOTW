@@ -1,5 +1,0 @@
-syntax: glob
-.settings/org.eclipse.ltk.core.refactoring.prefs
-.pydevproject
-.project
-*.pyc
