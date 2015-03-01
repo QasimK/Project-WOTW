@@ -7,12 +7,13 @@ Created on 5 Aug 2013
 import random
 
 from game import models
-from game.views import ActionError
 
 #@view_required("village-in", "village-explore-nothing", "village-in-market")
 #@allowed_exit_views("village-found-gold", "village-explore-nothing",
 #                    "generic-fighting")
 def village_explore(char, post):
+    from game.views import ActionError
+    
     #Get rid of any current GVPs
     for gvp in char.get_gvps().all():
         gvp.delete()

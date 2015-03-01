@@ -7,7 +7,6 @@ Created on 5 Aug 2013
 from django.shortcuts import redirect
 
 from game import models, item_actions
-from game.views import ActionError, char_inventory
 
 def inventory_item_action(char, post):
     """Do an item action from the inventory
@@ -16,6 +15,8 @@ def inventory_item_action(char, post):
         item-name: the item name
         action-name: name of action"
     """
+    
+    from game.views import ActionError, char_inventory
     
     if char.inventory_mode != char.INV_FULL_ACCESS:
         err = "Major error: Cannot do an item action without full inventory\
@@ -78,6 +79,8 @@ def inventory_drop_item(char, post):
         item-name: the item name
         amount: number/"all"
     """
+    
+    from game.views import ActionError
     
     if char.inventory_mode != char.INV_FULL_ACCESS:
         err = "Major error: Cannot drop item without full inventory access"

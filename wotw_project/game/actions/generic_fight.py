@@ -7,7 +7,6 @@ Created on 5 Aug 2013
 import random
 
 from game import models
-from game.views import ActionError
 
 ##@view_required("generic-fighting")
 ##@allowed_exit_views("generic-fighting", "generic-fight-win",
@@ -124,6 +123,8 @@ def generic_fight_loot_item(char, post):
     """
     
     loot_type = post["type"]
+    
+    from game.views import ActionError
     
     if loot_type in ("weapon", "weapon-replace"):
         if char.fight.looted_weapon:

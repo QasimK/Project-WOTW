@@ -5,7 +5,6 @@ Created on 5 Aug 2013
 '''
 
 from game import models
-from game.views import ActionError
 
 #@view_required("generic-shopping")
 #@allowed_exit_views("generic-shopping")
@@ -18,6 +17,8 @@ def generic_shop_purchase(char, post):
     Requires GVPs:
     - shop_name=Name of shop
     """
+    
+    from game.views import ActionError
     
     #Check GVPs first
     shop_name = char.get_gvp("shop_name").value
