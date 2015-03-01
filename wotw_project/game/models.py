@@ -577,29 +577,26 @@ class Inventory(models.Model):
         if remove_items is None:
             remove_items = []
         
-        class Te(Exception):
-            def __init__(self, is_success):
-                self.is_success = is_success
+        class FakeSuccess(Exception):
+            pass
         
-        #TODO: Remove exception catching from within the with:atomic
         try:
             with transaction.atomic():
                 for item, amount in remove_items:
                     self.remove_item(item, amount)
                 
-                try:
-                    for item, amount in add_items:
-                        self.add_item(item, amount)
-                except InventoryLacksSpace:
-                    if doit:
-                        raise
-                    else:
-                        raise Te(False)
-                else:
-                    if not doit:
-                        raise Te(True)
-        except Te as T:
-            return T.is_success
+                for item, amount in add_items:
+                    self.add_item(item, amount)
+                
+                if not doit:
+                    raise FakeSuccess() #Undo the transaction
+        except InventoryLacksSpace:
+            if doit:
+                raise
+            else:
+                return False
+        except FakeSuccess:
+            return True
 
 
     def add_item(self, item, amount):
