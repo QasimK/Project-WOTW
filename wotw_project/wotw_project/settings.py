@@ -115,6 +115,7 @@ USE_L10N = True
 STATIC_URL = '/static/'
 
 
-#WOTW Stuff
+# Login
 
-#GAME_MAP_LOCATION = os.path.join(WOTW_FOLDER_ROOT, "wotw_other")
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/game/"
