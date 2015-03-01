@@ -80,7 +80,7 @@ def inventory_drop_item(char, post):
         amount: number/"all"
     """
     
-    from game.views import ActionError
+    from game.views import ActionError, char_inventory
     
     if char.inventory_mode != char.INV_FULL_ACCESS:
         err = "Major error: Cannot drop item without full inventory access"
