@@ -1,9 +1,3 @@
-'''
-Created on 5 Aug 2013
-
-@author: Qasim
-'''
-
 from django.shortcuts import redirect
 
 from game import models, item_actions

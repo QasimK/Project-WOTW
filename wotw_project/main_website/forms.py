@@ -1,8 +1,7 @@
-# forms
+import string
 
 from django import forms
 
-import string
 
 def validate_alphanumeric_underscore(value):
     for char in value:
@@ -17,7 +16,6 @@ def validate_alphanumeric_underscore(value):
     raise forms.ValidationError(u"%s must contain only alphanumeric or underscore characters" % value)
 
 
-
 class AccountRegistrationForm(forms.Form):
     name_help = "Must be between 5-16 alphanumeric, underscore and dash characters."
     password_help = "Must be between 6-32 characters."
@@ -26,9 +24,3 @@ class AccountRegistrationForm(forms.Form):
     account_password = forms.CharField(min_length=6, max_length=32,
                                        help_text=password_help,
                                        widget=forms.widgets.PasswordInput)
-"""
-class LoginForm(forms.Form):
-    account_name = forms.SlugField(min_length=5, max_length=16)
-    account_password = forms.CharField(min_length=6, max_length=32,
-                                       widget=forms.widgets.PasswordInput)
-"""

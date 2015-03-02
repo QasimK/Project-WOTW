@@ -1,9 +1,3 @@
-'''
-Created on 5 Aug 2013
-
-@author: Qasim
-'''
-
 import random
 
 from game import models

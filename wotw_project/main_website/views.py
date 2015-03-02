@@ -1,14 +1,9 @@
-# Create your views here.
-
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-
 from django.contrib.auth.models import User
 
 from main_website.forms import AccountRegistrationForm
-
-import game.models as game_models
 from game.models import Character
 
 

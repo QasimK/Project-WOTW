@@ -1,8 +1,4 @@
 '''
-Created on 9 Apr 2011
-
-@author: Qasim
-
 This handles all actions for items in the inventory.
 The action may return a string.
 The action may also create Message objects for the player.

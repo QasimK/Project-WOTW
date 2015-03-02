@@ -1,9 +1,3 @@
-'''
-Created on 5 Aug 2013
-
-@author: Qasim
-'''
-
 from game import models
 
 #@view_required("generic-shopping")

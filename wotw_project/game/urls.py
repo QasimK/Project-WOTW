@@ -1,9 +1,3 @@
-'''
-Created on 1 Sep 2010
-
-@author: Qasim
-'''
-
 from django.conf.urls import patterns
 
 from game.views import (

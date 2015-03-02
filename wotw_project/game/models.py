@@ -1,4 +1,3 @@
-#Currently broken: Item actions.
 import random
 
 from django.db import models, transaction

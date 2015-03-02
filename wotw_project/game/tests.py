@@ -1,9 +1,5 @@
 '''
-Created on 11 Sep 2011
-
-@author: Qasim
-
-MUST USE manage.py test
+MUST USE `manage.py test` otherwise the real database is used for some tests
 '''
 
 from django.test import TestCase, TransactionTestCase

@@ -1,9 +1,3 @@
-'''
-Created on 19 Jan 2011
-
-@author: Qasim
-'''
-
 from functools import wraps
 
 from django.shortcuts import render, render_to_response, redirect
@@ -11,7 +5,6 @@ from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 
 import game.models as models
-import game.item_actions as item_actions
 import game.actions as a
 
 """
@@ -29,7 +22,6 @@ class IncorrectViewName(RuntimeError):
 
 def get_char(request):
     """Return user's character object"""
-    #print request.user.character_set.all()[0]
     return models.Character.objects.get(user_account=request.user)
 
 def create_msg(char, msg):
@@ -342,11 +334,10 @@ def game_view_resolver(request):
         if http_response != NI:
             return http_response
         else:
-            msg = "This view (%s) is not implemented"%game_view
+            msg = "This view (%s) is not implemented" % game_view
             redir = create_error(char, msg, 5)
             return redir
     except KeyError:
-        #Need to convey error somehow, temporary:
         err="Unknown game-view: %s" % game_view
         redir = create_error(char, err, 5)
         return redir

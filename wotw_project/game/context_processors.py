@@ -1,11 +1,6 @@
-'''
-Created on 5 Jul 2011
-
-@author: Qasim
-'''
+from django.conf import settings
 
 from game.models import Character
-from django.conf import settings
 
 def wotw_processor(request):
     """Add character and debug data to each template
@@ -20,7 +15,7 @@ def wotw_processor(request):
             return {}
         
         additional_info["char"] = char
-    
+        
         if settings.DEBUG:
             debug_char_view = "Game view: " + char.game_view
             debug_char_view += "<br />Game view properties: "

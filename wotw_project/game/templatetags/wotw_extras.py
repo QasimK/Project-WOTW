@@ -1,9 +1,3 @@
-'''
-Created on 28 Jun 2011
-
-@author: Qasim
-'''
-
 import string
 import math as maths
 
@@ -11,9 +5,9 @@ from django import template
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
+from django.template.base import VariableDoesNotExist
 
 from game.views import game_action_resolver
-from django.template.base import VariableDoesNotExist
 
 register = template.Library()
 
