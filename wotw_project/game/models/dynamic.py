@@ -2,13 +2,11 @@ import random
 
 from django.db import models, transaction
 from django.db.models import Q
-from django.contrib.auth import models as models_auth
 from django.db.models.signals import post_delete
+from django.contrib.auth import models as models_auth
 from django.dispatch import receiver
 
-import game.item_actions as item_actions
-
-#---Exceptions
+#--- Exceptions
 class WotwGameException(RuntimeError):
     def __init__(self, s):
         self.s = s
@@ -21,49 +19,6 @@ class PlayerAlreadyFighting(WotwGameException):
     def __str__(self):
         return "The player is already fighting with a monster: %s"%\
                 self.char_fight
-
-
-class InventoryDoesNotHaveItem(WotwGameException):
-    """The inventory from which the items were being removed does not have
-    that item"""
-    def __init__(self, inventory, item):
-        self.inventory = inventory
-        self.item = item
-    def __str__(self):
-        err = "The inventory %s does not have any items %s"%(
-            self.inventory, self.item.name)
-        return err
-
-class InventoryDoesNotHaveEnoughItems(WotwGameException):
-    """The inventory specified does not have enough of a certain item"""
-    def __init__(self, inventory, item, amount_required):
-        self.inventory = inventory
-        self.item = item
-        self.amount_required = amount_required
-    def __str__(self):
-        err = "The inventory %s does not have enough of the item: %s. "+\
-            "%s item(s) are required."%(self.inventory, self.item.name,
-                self.amount_required)
-        return err
-
-class InventoryIsUnlimited(WotwGameException):
-    """The inventory is unlimited and does not have a size"""
-    def __init__(self, inventory):
-        self.inventory = inventory
-    def __str__(self):
-        err = "The inventory %s is unlimited and therefore does not have a size"%\
-            self.inventory
-        return err
-
-class ItemIsUnlimitedStack(WotwGameException):
-    """The item has an unlimited stack size
-    Therefore there is no concept of stack space still free."""
-    def __init__(self, item):
-        self.item
-    def __str__(self):
-        err = "The item %s has an unlimited stack size tehrefore does not have\
-        a stack space left number"%self.item.name
-        return err
 
 
 class InventoryLacksSpace(WotwGameException):
@@ -82,8 +37,42 @@ class InventoryLacksSpace(WotwGameException):
         return err
 
 
+class InventoryDoesNotHaveItem(WotwGameException):
+    """The inventory from which the items were being removed does not have
+    that item"""
+    def __init__(self, inventory, item):
+        self.inventory = inventory
+        self.item = item
+    def __str__(self):
+        err = "The inventory %s does not have any items %s"%(
+            self.inventory, self.item.name)
+        return err
 
-#---Models
+
+class InventoryDoesNotHaveEnoughItems(WotwGameException):
+    """The inventory specified does not have enough of a certain item"""
+    def __init__(self, inventory, item, amount_required):
+        self.inventory = inventory
+        self.item = item
+        self.amount_required = amount_required
+    def __str__(self):
+        err = "The inventory %s does not have enough of the item: %s. "+\
+            "%s item(s) are required."%(self.inventory, self.item.name,
+                self.amount_required)
+        return err
+
+
+class InventoryIsUnlimited(WotwGameException):
+    """The inventory is unlimited and does not have a size"""
+    def __init__(self, inventory):
+        self.inventory = inventory
+    def __str__(self):
+        err = "The inventory %s is unlimited and therefore does not have a size"%\
+            self.inventory
+        return err
+
+
+#--- Models
 class Character(models.Model):
     INV_FULL_ACCESS = 'A'
     INV_VIEW_ONLY = 'B'
@@ -120,6 +109,8 @@ class Character(models.Model):
     @classmethod
     def make_new_character(cls, user_account):
         """Create and return a new character"""
+        from game.models import Inventory, Item, Recipe
+        
         inv = Inventory.objects.create(is_unlimited=False, size=12)
         weapon = Item.objects.get(name="Fists and Legs")
         armour = Item.objects.get(name="Clothes")
@@ -173,6 +164,8 @@ class Character(models.Model):
         Warning: Does not see if context of fight is valid.
         (ie. are you allowed to start a fight right now?)"""
         
+        from game.models import Monster, ActiveMonster
+        
         if self.fight != None:
             raise PlayerAlreadyFighting(self.fight)
         
@@ -200,6 +193,8 @@ class Character(models.Model):
 
 @receiver(post_delete, sender=Character, dispatch_uid='gam_cha_predelet')
 def character_delete(sender, instance, **kwargs):
+    from game.models import Inventory
+    
     character = instance
     try:
         character.inventory.delete()
@@ -207,6 +202,7 @@ def character_delete(sender, instance, **kwargs):
         pass
     if character.fight:
         character.fight.delete()
+
 
 
 class GameViewProperty(models.Model):
@@ -232,25 +228,7 @@ class GameViewProperty(models.Model):
     def __str__(self):
         return "GVP(char: %s, name: %s, value: %s)"%\
             (self.char, self.name, self.value)
-        
 
-
-
-
-class Monster(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    
-    hp = models.IntegerField()
-    hp_dev = models.IntegerField(default=0)
-    
-    weapon = models.ForeignKey('Item', related_name="monster_weapons")
-    armour = models.ForeignKey('Item', related_name="monster_armours")
-    
-    gold = models.IntegerField(default=0)
-    gold_dev = models.IntegerField(default=0)
-    
-    def __str__(self):
-        return self.name
 
 
 def create_activemonster_from_info(monster_info):
@@ -280,204 +258,6 @@ class ActiveMonster(models.Model):
         return str(self.monster_info)
 
 
-class Item(models.Model):
-    """All items must have a unique name, a cost and the max. stack size.
-    (is_unlimited_stack = True means it can stack forever
-    otherwise set a max_stack_size)
-    
-    Shops ignore the stack size. Stack size is used for player inventories.
-    Shops use the cost.
-    
-    Also use objects=ItemManager() on subclasses"""
-    name = models.CharField(max_length=100, unique=True)
-    
-    is_unlimited_stack = models.BooleanField(default=False)
-    max_stack_size = models.PositiveIntegerField(default=1)
-    
-    is_soulbound = models.BooleanField(default=False)
-    
-    item_actions = models.ManyToManyField('ItemAction',
-                                          through='ItemItemActionInfo')
-    
-    @property
-    def prop_damage(self):
-        """Return the damage item property"""
-        return int(self.itemproperty_set.get(name=ItemProperty.DAMAGE).value)
-    
-    @property
-    def prop_damage_absorbed(self):
-        """Return the damage absorbed item property"""
-        prop = self.itemproperty_set.get(name=ItemProperty.DAMAGE_ABSORBED)
-        return int(prop.value)
-    
-    @property
-    def prop_cost(self):
-        prop = self.itemproperty_set.get(name=ItemProperty.COST)
-        return int(prop.value)
-    
-    @property
-    def prop_health_healed(self):
-        prop = self.itemproperty_set.get(name=ItemProperty.HEALTH_HEALED)
-        return int(prop.value)
-    
-    def get_props(self):
-        """Return all properties in format [(nice name, value), ...]"""
-        props = self.itemproperty_set.all()
-        return [(prop.get_name_display(), prop.value) for prop in props]
-    
-    def get_item_actions(self):
-        """Return a list of [item_action object, display text]"""
-        return [(i.item_action, i.display_text) for i in
-                self.itemitemactioninfo_set.all()]
-    
-    #===========================================================================
-    # #Property stuff
-    # def get_all_ipis(self):
-    #    """Return all IPIs for this object"""
-    #    return self.itempropertyinfo_set.all()
-    # 
-    # 
-    # def get_all_props_ext(self):
-    #    """Return a list of (item property name, item property info object)"""
-    #    ps = []
-    #    #itempropertyinfo
-    #    for ipi in self.itempropertyinfo_set.all():
-    #        ps.append( (ipi.item_property.name, ipi) )
-    #    return ps
-    # 
-    # def get_all_props(self):
-    #    """Return all IPIs"""
-    #    return self.itempropertyinfo_set.all()
-    # 
-    # def get_named_props(self, prop_name):
-    #    """Return the list of item properties with the name specified"""
-    #    ipis = self.itempropertyinfo_set.filter(item_property__name=prop_name)
-    #    if ipis:
-    #        return ipis
-    #    return None
-    # 
-    # def get_named_prop(self, prop_name):
-    #    """Return the *single* item property *value* specified
-    #    
-    #    Need to check this:
-    #    If there is more than one it will return the first one."""
-    #    try:
-    #        ipi = self.itempropertyinfo_set.get(item_property__name=prop_name)
-    #        return ipi.value
-    #    except ItemPropertyInfo.DoesNotExist:
-    #        return None
-    # 
-    # 
-    # def prop_damage(self):
-    #    """Shortcut: Return damage property of item if there is one"""
-    #    ret = self.get_named_prop("damage")
-    #    if ret:
-    #        return int(ret)
-    # 
-    # def prop_damage_absorbed(self):
-    #    ret = self.get_named_prop("damage absorbed")
-    #    if ret:
-    #        return int(ret)
-    # 
-    # def prop_health_healed(self):
-    #    ret = self.get_named_prop("health healed")
-    #    if ret:
-    #        return int(ret)
-    # 
-    # def prop_soulbound(self):
-    #    ret = self.get_named_prop("soulbound")
-    #    if ret in ("true",):
-    #        return True
-    #    elif ret in ("false",):
-    #        return False
-    #    elif not ret: #ret=None
-    #        return False
-    # 
-    # def prop_cost(self):
-    #    ret = self.get_named_prop("cost")
-    #    if ret:
-    #        return int(ret)
-    # 
-    #===========================================================================
-    
-    def __str__(self):
-        return self.name
-
-
-
-
-class ItemProperty(models.Model):
-    """A property that exists on an item"""
-    
-    COST = 'cst'
-    DAMAGE = "dmg"
-    HEALTH_HEALED = "hh"
-    DAMAGE_ABSORBED = "da"
-    NAME_CHOICES = (
-        (COST, "Cost"),
-        (DAMAGE, "Damage Dealt"),
-        (HEALTH_HEALED, "Health Healed"),
-        (DAMAGE_ABSORBED, "Damage Absorbed"),
-    )
-    
-    item = models.ForeignKey(Item)
-    name = models.CharField(max_length=3, choices=NAME_CHOICES)
-    value = models.CharField(max_length=100)
-    
-    class Meta:
-        verbose_name = "item property"
-        verbose_name_plural = "item properties"
-        unique_together = ("item", "name", "value")
-    
-    def __str__(self):
-        return self.name
-
-
-def get_item_action_choices():
-    for f in item_actions.ITEM_ACTIONS.keys():
-        yield (f,f)
-
-class ItemAction(models.Model):
-    """Actions that the character can do with the item"""
-    TAR_CHAR = 'c'
-    TAR_FIGHT = 'f'
-    TAR_INV_ITEM = 'i'
-    TARGET_CHOICES = (
-        (TAR_CHAR, 'Character'),
-        (TAR_FIGHT, 'Fight'),
-        (TAR_INV_ITEM, 'Inventory Item')
-    )
-    
-    func = models.CharField(max_length=100, unique=True,
-                            choices=get_item_action_choices())
-    
-    target = models.CharField(max_length=1, choices=TARGET_CHOICES)
-    
-    allow_in_combat = models.BooleanField(default=False)
-    allow_out_combat = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return self.func
-
-
-class ItemItemActionInfo(models.Model):
-    item = models.ForeignKey(Item)
-    item_action = models.ForeignKey(ItemAction)
-    display_text = models.CharField(max_length=100)
-
-
-class Shop(models.Model):
-    """Shops hold a collection of items available for purchase"""
-    name = models.CharField(max_length=100, unique=True)
-    inventory = models.ForeignKey('Inventory')
-    
-    def natural_key(self):
-        return (self.name,)
-    
-    def __str__(self):
-        return self.name
-
-
 
 class Inventory(models.Model):
     """An inventory holding objects.
@@ -486,7 +266,7 @@ class Inventory(models.Model):
     is_unlimited = models.BooleanField(default=True)
     size = models.PositiveIntegerField(default=0) #used only if not unlimited
     
-    items = models.ManyToManyField(Item, through='InventoryItemInfo')
+    items = models.ManyToManyField('Item', through='InventoryItemInfo')
     
     class Meta:
         verbose_name = "inventory"
@@ -687,6 +467,8 @@ class Inventory(models.Model):
     
     
     def __str__(self):
+        from game.models import Character, Shop
+        
         def trychar():
             try:
                 ci = Character.objects.get(inventory=self.pk)
@@ -711,7 +493,7 @@ class Inventory(models.Model):
 
 class InventoryItemInfo(models.Model):
     inventory = models.ForeignKey(Inventory)
-    item = models.ForeignKey(Item)
+    item = models.ForeignKey('Item')
     
     #The number of items in the stack
     stack_size = models.PositiveIntegerField()
@@ -726,53 +508,6 @@ class InventoryItemInfo(models.Model):
     def __str__(self):
         return str(self.inventory)+"/"+str(self.item)
 
-
-class Recipe(models.Model):
-    name = models.CharField(max_length=100)
-    ingredients = models.ManyToManyField(Item, through='RecipeIngredientInfo',
-                                         related_name="recipe_ingredients_set")
-    products = models.ManyToManyField(Item, through='RecipeProductInfo',
-                                      related_name='recipe_products_set')
-    
-    def ingredients_list(self):
-        """Return the list [(ingredient, number), ...]"""
-        lst = []
-        for ingredient in self.ingredients.all():
-            info = self.recipeingredientinfo_set.get(ingredient=ingredient)
-            lst.append((ingredient, info.quantity))
-        return lst
-    
-    def products_list(self):
-        """Return the list [(product, number), ...]"""
-        lst = []
-        for product in self.products.all():
-            info = self.recipeproductinfo_set.get(product=product)
-            lst.append((product, info.quantity))
-        return lst
-    
-    def __str__(self):
-        return self.name
-
-
-class RecipeIngredientInfo(models.Model):
-    recipe = models.ForeignKey(Recipe)
-    ingredient = models.ForeignKey(Item)
-    quantity = models.IntegerField(default=1)
-
-
-class RecipeProductInfo(models.Model):
-    recipe = models.ForeignKey(Recipe)
-    product = models.ForeignKey(Item)
-    quantity = models.IntegerField(default=1)
-
-
-class Location(models.Model):
-    name = models.CharField(max_length=100)
-    can_goto_views = models.ManyToManyField('self', symmetrical=False,
-                                            blank=True, null=True)
-    
-    def __str__(self):
-        return self.name
 
 
 class Message(models.Model):
