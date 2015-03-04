@@ -71,10 +71,10 @@ def village_explore(char, post):
         eve_found_item: 0,
     }
     
-    max_chance = sum(events.itervalues())
+    max_chance = sum(events.values())
     roll = random.randint(0, max_chance-1)
     
-    for event_function, chance in events.iteritems():
+    for event_function, chance in events.items():
         roll -= chance
         if roll < 0:
             return event_function()
