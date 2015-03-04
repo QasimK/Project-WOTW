@@ -19,7 +19,8 @@ class Command(BaseCommand):
         if len(args) > 1:
             raise CommandError("No more than one argument should be specified")
         
-        save_models = chain(Monster.objects.all(),
+        # Must handle manual sorting of this for dependencies!
+        save_models = chain(
             Item.objects.all(),
             ItemProperty.objects.all(),
             ItemAction.objects.all(),
@@ -38,5 +39,5 @@ class Command(BaseCommand):
             with open(args[0], 'w') as f:
                 f.write(fixture)
         except:
-            with open(settings.STANDARD_DB_FIXTURE, 'w') as f:
+            with open(STANDARD_DB_FIXTURE, 'w') as f:
                 f.write(fixture)

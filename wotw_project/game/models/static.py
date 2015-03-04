@@ -1,7 +1,7 @@
 from django.db import models
 
 from game import item_actions
-
+from game.models.managers import *
 
 #---Models
 class Item(models.Model):
@@ -9,6 +9,8 @@ class Item(models.Model):
     
     Shops ignore the max_stack_size.
     max_stack_size is used for player inventories."""
+    objects = ItemManager()
+    
     name = models.CharField(max_length=100, unique=True)
     
     # It can either stack forever, or max_stack_size is used
@@ -62,6 +64,7 @@ class Item(models.Model):
 
 class ItemProperty(models.Model):
     """A property on an item - (item, item property name) is unique"""
+    objects = ItemPropertyManager()
     
     COST = 'cst'
     DAMAGE = "dmg"
@@ -84,7 +87,7 @@ class ItemProperty(models.Model):
         unique_together = ("item", "name")
     
     def natural_key(self):
-        return self.item.natural_key() + (self.name,)
+        return (self.item.natural_key(), self.name)
     natural_key.dependencies = ['game.item']
     
     def __str__(self):
@@ -95,6 +98,8 @@ class ItemAction(models.Model):
     """Actions that the character can do with the item
     
     The func (item action function) is a unique string"""
+    objects = ItemActionManager()
+    
     TAR_CHAR = 'c'
     TAR_FIGHT = 'f'
     TAR_INV_ITEM = 'i' #TODO: What does that mean?
@@ -120,6 +125,8 @@ class ItemAction(models.Model):
 
 
 class ItemItemActionInfo(models.Model):
+    objects = ItemItemActionManager()
+    
     item = models.ForeignKey(Item)
     item_action = models.ForeignKey(ItemAction)
     display_text = models.CharField(max_length=100)
@@ -128,12 +135,14 @@ class ItemItemActionInfo(models.Model):
         unique_together = ('item', 'item_action')
     
     def natural_key(self):
-        return self.item.natural_key() + self.item_action.natural_key()
+        return (self.item.natural_key(), self.item_action.natural_key())
     natural_key.dependencies = ['game.Item', 'game.ItemAction']
 
 
 class Monster(models.Model):
     '''Monsters have a unique name'''
+    objects = MonsterManager()
+    
     name = models.CharField(max_length=100, unique=True)
     
     hp = models.IntegerField()
@@ -147,6 +156,7 @@ class Monster(models.Model):
     
     def natural_key(self):
         return (self.name,)
+    natural_key.dependencies = ['game.Item']
     
     def __str__(self):
         return self.name
@@ -154,8 +164,10 @@ class Monster(models.Model):
 
 class Shop(models.Model):
     """Shops hold a collection of items available for purchase"""
+    objects = ShopManager()
+    
     name = models.CharField(max_length=100, unique=True)
-    inventory = models.ForeignKey('Inventory')
+    inventory = models.ForeignKey('Inventory', null=True, blank=True)
     
     def natural_key(self):
         return (self.name,)
@@ -167,6 +179,7 @@ class Shop(models.Model):
 
 class Recipe(models.Model):
     '''Recipes have unique names'''
+    objects = RecipeManager()
     
     name = models.CharField(max_length=100, unique=True)
     ingredients = models.ManyToManyField(Item, through='RecipeIngredientInfo',
@@ -191,13 +204,15 @@ class Recipe(models.Model):
         return lst
     
     def natural_key(self):
-        return (self.name, )
+        return (self.name,)
     
     def __str__(self):
         return self.name
 
 
 class RecipeIngredientInfo(models.Model):
+    objects = RecipeIngredientInfoManager()
+    
     recipe = models.ForeignKey(Recipe)
     ingredient = models.ForeignKey(Item)
     quantity = models.IntegerField(default=1)
@@ -206,11 +221,13 @@ class RecipeIngredientInfo(models.Model):
         unique_together = ('recipe', 'ingredient')
     
     def natural_key(self):
-        return self.recipe.natural_key() + self.ingredient.natural_key()
+        return (self.recipe.natural_key(), self.ingredient.natural_key())
     natural_key.dependencies = ['game.Recipe', 'game.Item']
 
 
 class RecipeProductInfo(models.Model):
+    objects = RecipeProductInfoManager()
+    
     recipe = models.ForeignKey(Recipe)
     product = models.ForeignKey(Item)
     quantity = models.IntegerField(default=1)
@@ -219,11 +236,11 @@ class RecipeProductInfo(models.Model):
         unique_together = ('recipe', 'product')
     
     def natural_key(self):
-        return self.recipe.natural_key() + self.product.natural_key()
+        return (self.recipe.natural_key(), self.product.natural_key())
     natural_key.dependencies = ['game.Recipe', 'game.Item']
 
 
-# TODO: Quite positive that this isn't used.
+# TODO: Not yet used
 class Location(models.Model):
     name = models.CharField(max_length=100)
     can_goto_views = models.ManyToManyField('self', symmetrical=False,
