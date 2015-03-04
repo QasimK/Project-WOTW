@@ -1,12 +1,15 @@
 '''Save static game content into a fixture'''
 
 from itertools import chain
+import os
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings 
 from django.core import serializers
 
-from game.models.static import *
+from game.models.static import *  # @UnusedWildImport
+
+STANDARD_DB_FIXTURE = os.path.join(settings.BASE_DIR, 'content_fixture.json')
 
 class Command(BaseCommand):
     args = '<full file path+name>'
