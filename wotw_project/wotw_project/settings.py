@@ -12,7 +12,7 @@ import os
 from os.path import dirname
 BASE_DIR = dirname(dirname(__file__)) #ie. the folder: wotw/wotw_project/
 PROJECT_DIR = dirname(BASE_DIR) #ie. the folder: wotw/
-
+STANDARD_DB_FIXTURE = os.path.join(BASE_DIR, 'content_fixture.yaml')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/

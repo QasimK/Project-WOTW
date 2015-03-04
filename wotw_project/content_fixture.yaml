@@ -1,0 +1,920 @@
+[
+{
+  "fields": {
+    "weapon": [
+      "Bloodied Claws"
+    ],
+    "armour": [
+      "Thick Hide"
+    ],
+    "gold_dev": 0,
+    "hp": 99,
+    "name": "Bloodhound",
+    "hp_dev": 0,
+    "gold": 200
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Sharp Mouth"
+    ],
+    "armour": [
+      "Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 20,
+    "name": "Rabid Dog",
+    "hp_dev": 10,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Sharp Claws"
+    ],
+    "armour": [
+      "Grey Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 40,
+    "name": "Lone Wolf",
+    "hp_dev": 10,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Dagger"
+    ],
+    "armour": [
+      "Leather"
+    ],
+    "gold_dev": 10,
+    "hp": 60,
+    "name": "Thief",
+    "hp_dev": 20,
+    "gold": 20
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Claws"
+    ],
+    "armour": [
+      "Thick Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 60,
+    "name": "Vicious Bear",
+    "hp_dev": 20,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Fists and Legs",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Clothes",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Bloodied Claws",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Thick Hide",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Sharp Mouth",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Fur",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Sharp Claws",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Grey Fur",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Dagger",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Leather",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Claws",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": true,
+    "is_unlimited_stack": false,
+    "name": "Thick Fur",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Kava Leaves",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Elderberry",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Nightshade",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Chaparral",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Figger seeds",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Aloe vera",
+    "max_stack_size": 5
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Grapes",
+    "max_stack_size": 10
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Short Sword",
+    "max_stack_size": 1
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Waking Brew",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Wounds Potion",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Nightshade Potion",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Rock Concoction",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "is_soulbound": false,
+    "is_unlimited_stack": false,
+    "name": "Sleeping Brew",
+    "max_stack_size": 3
+  },
+  "model": "game.item"
+},
+{
+  "fields": {
+    "value": "15",
+    "item": [
+      "Bloodied Claws"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "15",
+    "item": [
+      "Thick Hide"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "5",
+    "item": [
+      "Sharp Mouth"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "5",
+    "item": [
+      "Fur"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "10",
+    "item": [
+      "Sharp Claws"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "10",
+    "item": [
+      "Grey Fur"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "12",
+    "item": [
+      "Dagger"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "12",
+    "item": [
+      "Leather"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "8",
+    "item": [
+      "Claws"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "8",
+    "item": [
+      "Thick Fur"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "45",
+    "item": [
+      "Kava Leaves"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "110",
+    "item": [
+      "Elderberry"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "80",
+    "item": [
+      "Nightshade"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "230",
+    "item": [
+      "Chaparral"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "120",
+    "item": [
+      "Figger seeds"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "40",
+    "item": [
+      "Aloe vera"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "20",
+    "item": [
+      "Grapes"
+    ],
+    "name": "hh"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "12",
+    "item": [
+      "Short Sword"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "25",
+    "item": [
+      "Grapes"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "90",
+    "item": [
+      "Short Sword"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "50",
+    "item": [
+      "Waking Brew"
+    ],
+    "name": "hh"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "100",
+    "item": [
+      "Wounds Potion"
+    ],
+    "name": "hh"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "120",
+    "item": [
+      "Wounds Potion"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "120",
+    "item": [
+      "Nightshade Potion"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "40",
+    "item": [
+      "Rock Concoction"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "140",
+    "item": [
+      "Rock Concoction"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "60",
+    "item": [
+      "Sleeping Brew"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "50",
+    "item": [
+      "Waking Brew"
+    ],
+    "name": "cst"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "5",
+    "item": [
+      "Fists and Legs"
+    ],
+    "name": "dmg"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "value": "1",
+    "item": [
+      "Clothes"
+    ],
+    "name": "da"
+  },
+  "model": "game.itemproperty"
+},
+{
+  "fields": {
+    "allow_in_combat": true,
+    "func": "self heal; one use",
+    "allow_out_combat": true,
+    "target": "c"
+  },
+  "model": "game.itemaction"
+},
+{
+  "fields": {
+    "item": [
+      "Grapes"
+    ],
+    "display_text": "Eat",
+    "item_action": [
+      "self heal; one use"
+    ]
+  },
+  "model": "game.itemitemactioninfo"
+},
+{
+  "fields": {
+    "item": [
+      "Waking Brew"
+    ],
+    "display_text": "Drink",
+    "item_action": [
+      "self heal; one use"
+    ]
+  },
+  "model": "game.itemitemactioninfo"
+},
+{
+  "fields": {
+    "item": [
+      "Wounds Potion"
+    ],
+    "display_text": "Drink",
+    "item_action": [
+      "self heal; one use"
+    ]
+  },
+  "model": "game.itemitemactioninfo"
+},
+{
+  "fields": {
+    "weapon": [
+      "Bloodied Claws"
+    ],
+    "armour": [
+      "Thick Hide"
+    ],
+    "gold_dev": 0,
+    "hp": 99,
+    "name": "Bloodhound",
+    "hp_dev": 0,
+    "gold": 200
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Sharp Mouth"
+    ],
+    "armour": [
+      "Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 20,
+    "name": "Rabid Dog",
+    "hp_dev": 10,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Sharp Claws"
+    ],
+    "armour": [
+      "Grey Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 40,
+    "name": "Lone Wolf",
+    "hp_dev": 10,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Dagger"
+    ],
+    "armour": [
+      "Leather"
+    ],
+    "gold_dev": 10,
+    "hp": 60,
+    "name": "Thief",
+    "hp_dev": 20,
+    "gold": 20
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "weapon": [
+      "Claws"
+    ],
+    "armour": [
+      "Thick Fur"
+    ],
+    "gold_dev": 0,
+    "hp": 60,
+    "name": "Vicious Bear",
+    "hp_dev": 20,
+    "gold": 0
+  },
+  "model": "game.monster"
+},
+{
+  "fields": {
+    "name": "Village Shop",
+    "inventory": 2
+  },
+  "model": "game.shop"
+},
+{
+  "fields": {
+    "name": "Village Herbology Store",
+    "inventory": 3
+  },
+  "model": "game.shop"
+},
+{
+  "fields": {
+    "name": "Waking Brew Recipe"
+  },
+  "model": "game.recipe"
+},
+{
+  "fields": {
+    "name": "Wounds Potion Recipe"
+  },
+  "model": "game.recipe"
+},
+{
+  "fields": {
+    "name": "Nightshade Potion Recipe"
+  },
+  "model": "game.recipe"
+},
+{
+  "fields": {
+    "name": "Rock Concoction Recipe"
+  },
+  "model": "game.recipe"
+},
+{
+  "fields": {
+    "name": "Sleeping Brew Recipe"
+  },
+  "model": "game.recipe"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Kava Leaves"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Waking Brew Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Kava Leaves"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Wounds Potion Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Elderberry"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Wounds Potion Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Nightshade"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Nightshade Potion Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Chaparral"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Rock Concoction Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Figger seeds"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Rock Concoction Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "ingredient": [
+      "Aloe vera"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Sleeping Brew Recipe"
+    ]
+  },
+  "model": "game.recipeingredientinfo"
+},
+{
+  "fields": {
+    "product": [
+      "Waking Brew"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Waking Brew Recipe"
+    ]
+  },
+  "model": "game.recipeproductinfo"
+},
+{
+  "fields": {
+    "product": [
+      "Wounds Potion"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Wounds Potion Recipe"
+    ]
+  },
+  "model": "game.recipeproductinfo"
+},
+{
+  "fields": {
+    "product": [
+      "Nightshade Potion"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Nightshade Potion Recipe"
+    ]
+  },
+  "model": "game.recipeproductinfo"
+},
+{
+  "fields": {
+    "product": [
+      "Rock Concoction"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Rock Concoction Recipe"
+    ]
+  },
+  "model": "game.recipeproductinfo"
+},
+{
+  "fields": {
+    "product": [
+      "Sleeping Brew"
+    ],
+    "quantity": 1,
+    "recipe": [
+      "Sleeping Brew Recipe"
+    ]
+  },
+  "model": "game.recipeproductinfo"
+}
+]

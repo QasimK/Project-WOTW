@@ -1,39 +1,21 @@
 from django.db import models
 
-import game.item_actions as item_actions
+from game import item_actions
 
 
 #---Models
-class Monster(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    
-    hp = models.IntegerField()
-    hp_dev = models.IntegerField(default=0)
-    
-    weapon = models.ForeignKey('Item', related_name="monster_weapons")
-    armour = models.ForeignKey('Item', related_name="monster_armours")
-    
-    gold = models.IntegerField(default=0)
-    gold_dev = models.IntegerField(default=0)
-    
-    def __str__(self):
-        return self.name
-
-
 class Item(models.Model):
-    """All items must have a unique name, a cost and the max. stack size.
-    (is_unlimited_stack = True means it can stack forever
-    otherwise set a max_stack_size)
+    """Items have a unique name.
     
-    Shops ignore the stack size. Stack size is used for player inventories.
-    Shops use the cost.
-    
-    Also use objects=ItemManager() on subclasses"""
+    Shops ignore the max_stack_size.
+    max_stack_size is used for player inventories."""
     name = models.CharField(max_length=100, unique=True)
     
+    # It can either stack forever, or max_stack_size is used
     is_unlimited_stack = models.BooleanField(default=False)
     max_stack_size = models.PositiveIntegerField(default=1)
     
+    # Determines if looting and trading the item is possible
     is_soulbound = models.BooleanField(default=False)
     
     item_actions = models.ManyToManyField('ItemAction',
@@ -52,6 +34,7 @@ class Item(models.Model):
     
     @property
     def prop_cost(self):
+        '''Return the value of the item - used by shops'''
         prop = self.itemproperty_set.get(name=ItemProperty.COST)
         return int(prop.value)
     
@@ -70,12 +53,15 @@ class Item(models.Model):
         return [(i.item_action, i.display_text) for i in
                 self.itemitemactioninfo_set.all()]
     
+    def natural_key(self):
+        return (self.name,)
+    
     def __str__(self):
         return self.name
 
 
 class ItemProperty(models.Model):
-    """A property that exists on an item"""
+    """A property on an item - (item, item property name) is unique"""
     
     COST = 'cst'
     DAMAGE = "dmg"
@@ -95,21 +81,23 @@ class ItemProperty(models.Model):
     class Meta:
         verbose_name = "item property"
         verbose_name_plural = "item properties"
-        unique_together = ("item", "name", "value")
+        unique_together = ("item", "name")
+    
+    def natural_key(self):
+        return self.item.natural_key() + (self.name,)
+    natural_key.dependencies = ['game.item']
     
     def __str__(self):
         return self.name
 
 
-def get_item_action_choices():
-    for f in item_actions.ITEM_ACTIONS.keys():
-        yield (f,f)
-
 class ItemAction(models.Model):
-    """Actions that the character can do with the item"""
+    """Actions that the character can do with the item
+    
+    The func (item action function) is a unique string"""
     TAR_CHAR = 'c'
     TAR_FIGHT = 'f'
-    TAR_INV_ITEM = 'i'
+    TAR_INV_ITEM = 'i' #TODO: What does that mean?
     TARGET_CHOICES = (
         (TAR_CHAR, 'Character'),
         (TAR_FIGHT, 'Fight'),
@@ -117,12 +105,15 @@ class ItemAction(models.Model):
     )
     
     func = models.CharField(max_length=100, unique=True,
-                            choices=get_item_action_choices())
+                            choices=item_actions.get_item_action_choices())
     
     target = models.CharField(max_length=1, choices=TARGET_CHOICES)
     
     allow_in_combat = models.BooleanField(default=False)
     allow_out_combat = models.BooleanField(default=False)
+    
+    def natural_key(self):
+        return (self.func, )
     
     def __str__(self):
         return self.func
@@ -132,6 +123,33 @@ class ItemItemActionInfo(models.Model):
     item = models.ForeignKey(Item)
     item_action = models.ForeignKey(ItemAction)
     display_text = models.CharField(max_length=100)
+    
+    class Meta:
+        unique_together = ('item', 'item_action')
+    
+    def natural_key(self):
+        return self.item.natural_key() + self.item_action.natural_key()
+    natural_key.dependencies = ['game.Item', 'game.ItemAction']
+
+
+class Monster(models.Model):
+    '''Monsters have a unique name'''
+    name = models.CharField(max_length=100, unique=True)
+    
+    hp = models.IntegerField()
+    hp_dev = models.IntegerField(default=0)
+    
+    weapon = models.ForeignKey('Item', related_name="monster_weapons")
+    armour = models.ForeignKey('Item', related_name="monster_armours")
+    
+    gold = models.IntegerField(default=0)
+    gold_dev = models.IntegerField(default=0)
+    
+    def natural_key(self):
+        return (self.name,)
+    
+    def __str__(self):
+        return self.name
 
 
 class Shop(models.Model):
@@ -148,7 +166,9 @@ class Shop(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=100)
+    '''Recipes have unique names'''
+    
+    name = models.CharField(max_length=100, unique=True)
     ingredients = models.ManyToManyField(Item, through='RecipeIngredientInfo',
                                          related_name="recipe_ingredients_set")
     products = models.ManyToManyField(Item, through='RecipeProductInfo',
@@ -170,6 +190,9 @@ class Recipe(models.Model):
             lst.append((product, info.quantity))
         return lst
     
+    def natural_key(self):
+        return (self.name, )
+    
     def __str__(self):
         return self.name
 
@@ -178,14 +201,29 @@ class RecipeIngredientInfo(models.Model):
     recipe = models.ForeignKey(Recipe)
     ingredient = models.ForeignKey(Item)
     quantity = models.IntegerField(default=1)
+    
+    class Meta:
+        unique_together = ('recipe', 'ingredient')
+    
+    def natural_key(self):
+        return self.recipe.natural_key() + self.ingredient.natural_key()
+    natural_key.dependencies = ['game.Recipe', 'game.Item']
 
 
 class RecipeProductInfo(models.Model):
     recipe = models.ForeignKey(Recipe)
     product = models.ForeignKey(Item)
     quantity = models.IntegerField(default=1)
+    
+    class Meta:
+        unique_together = ('recipe', 'product')
+    
+    def natural_key(self):
+        return self.recipe.natural_key() + self.product.natural_key()
+    natural_key.dependencies = ['game.Recipe', 'game.Item']
 
 
+# TODO: Quite positive that this isn't used.
 class Location(models.Model):
     name = models.CharField(max_length=100)
     can_goto_views = models.ManyToManyField('self', symmetrical=False,

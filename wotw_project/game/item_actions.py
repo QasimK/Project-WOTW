@@ -1,8 +1,8 @@
 '''
 This handles all actions for items in the inventory.
-The action may return a string.
-The action may also create Message objects for the player.
 The action could do anything.
+The action may return a string. (TODO: Why?)
+The action may also create Message objects for the player.
 
 Action functions require the item and the target.
 The target must be a Character (for now).
@@ -42,6 +42,12 @@ def ia_damage_once(char, item, target):
     target.hp = max(0, target.hp - item.prop_damage)
     target.save()
     char.inventory.remove_item(item)
+
+
+def get_item_action_choices():
+    for f in ITEM_ACTIONS.keys():
+        yield (f,f)
+
 
 ITEM_ACTIONS = {
     "self heal; one use": ia_self_heal_once,
