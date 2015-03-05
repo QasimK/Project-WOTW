@@ -19,14 +19,23 @@ class Command(BaseCommand):
         if len(args) > 1:
             raise CommandError("No more than one argument should be specified")
         
+        # Must set inventory foreign key to null because inventory is dynamic
+        def shops():
+            shops = Shop.objects.all()
+            for shop in shops:
+                shop.inventory = None
+            return shops
+        
         # Must handle manual sorting of this for dependencies!
         save_models = chain(
             Item.objects.all(),
             ItemProperty.objects.all(),
             ItemAction.objects.all(),
             ItemItemActionInfo.objects.all(),
+            ItemTable.objects.all(),
+            ItemTableItemInfo.objects.all(),
             Monster.objects.all(),
-            Shop.objects.all(),
+            shops(),
             Recipe.objects.all(),
             RecipeIngredientInfo.objects.all(),
             RecipeProductInfo.objects.all()

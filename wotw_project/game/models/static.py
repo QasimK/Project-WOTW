@@ -139,6 +139,38 @@ class ItemItemActionInfo(models.Model):
     natural_key.dependencies = ['game.Item', 'game.ItemAction']
 
 
+class ItemTable(models.Model):
+    '''A basic collection of items with associated quantities'''
+    objects = ItemTableManager()
+    
+    #Name is used entirely to act as a natural key
+    name = models.CharField(max_length=80, unique=True)
+    items = models.ManyToManyField(Item, through='ItemTableItemInfo')
+    
+    def natural_key(self):
+        return (self.name,)
+    
+    def __str__(self):
+        return self.name
+
+
+class ItemTableItemInfo(models.Model):
+    '''Item tables link to items with associated quantities'''
+    objects = ItemTableItemInfoManager()
+    
+    item_table = models.ForeignKey(ItemTable)
+    item = models.ForeignKey(Item)
+    quantity = models.PositiveIntegerField(blank=True, null=True) #null=infinite
+    
+    def natural_key(self):
+        return (self.item_table.natural_key(), self.item.natural_key())
+    natural_key.dependencies = ['game.ItemTable', 'game.Item']
+    
+    def __str__(self):
+        q = 'Infinite' if self.quantity is None else self.quantity
+        return '{}:{} ({})'.format(self.item_table, self.item, q)
+
+
 class Monster(models.Model):
     '''Monsters have a unique name'''
     objects = MonsterManager()
@@ -167,6 +199,7 @@ class Shop(models.Model):
     objects = ShopManager()
     
     name = models.CharField(max_length=100, unique=True)
+    item_table = models.ForeignKey(ItemTable)
     inventory = models.ForeignKey('Inventory', null=True, blank=True)
     
     def natural_key(self):
@@ -174,7 +207,6 @@ class Shop(models.Model):
     
     def __str__(self):
         return self.name
-
 
 
 class Recipe(models.Model):
