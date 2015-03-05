@@ -39,6 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.staticfiles',
+    #3rd party
+    'debug_toolbar',
+    #Project WOTW
     'main_website',
     'game'
 )
