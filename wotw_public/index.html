@@ -1,35 +1,61 @@
+{% comment %}
+Takes (optionally) start_form
+Takes (optionally) login_form
+{% endcomment %}
+
 <!doctype html>
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="format.css" />
     <title>{% block title %}WOTW{% endblock %}</title>
-	<link rel="stylesheet" type="text/css" href="format.css" />
   </head>
   <body>
-	{% block body %}
+  	<header>
 		<h1>WOTW</h1>
-		<a href="{% url "django.contrib.auth.views.login" %}">
-			You can login if you already have an account
-		</a>
-		<br />
-		<a href="{% url "admin:index" %}">
-			Admin site
-		</a>
-		
-		{% if registration_succeeded %}
-			<p>{{ registration_succeeded }}</p>
-		{% endif %}
+		<p>
+			<a href="{% url "admin:index" %}">Admin site</a>
+		</p>
+	</header>
+	
+	{% if start_form %}
 		<section>
 			<h2>Register</h2>
 			<p>If you do not have an account you can register here</p>
-			<form action="{{ registration_form_action }}" method="POST">{% csrf_token %}
-				<table>
+			<form action="/" method="POST">
+				{% csrf_token %}
+				<p>
 					{{ registration_form }}
-					<tr><td><input type="submit" value="Register"/></td></tr>
-				</table>
+				</p>
+				<p>
+					<input type="submit" value="Register" />
+				</p>
 			</form>
-			
 		</section>
-	{% endblock %}
+	{% endif %}
+	
+	{% if login_form %}
+		<section>
+			<h2>Login</h2>
+			
+			<form action="/" method="POST">
+				{% csrf_token %}
+				{{ login_form.as_p }}
+				<input type="submit" value="Login" />
+			</form>
+		</section>
+	{% endif %}
+	
+	{% if user.is_authenticated %}
+		<section>
+		<h2>Continue playing ({{ user }})</h2>
+		<p>
+			<a href="">Continue playing</a> or perhaps
+			<a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>.
+		</p>
+	{% endif %}
+	
   </body>
 </html>

@@ -24,3 +24,4 @@ class AccountRegistrationForm(forms.Form):
     account_password = forms.CharField(min_length=6, max_length=32,
                                        help_text=password_help,
                                        widget=forms.widgets.PasswordInput)
+
