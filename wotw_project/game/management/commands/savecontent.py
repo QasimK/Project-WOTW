@@ -32,10 +32,9 @@ class Command(BaseCommand):
             ItemProperty.objects.all(),
             ItemAction.objects.all(),
             ItemItemActionInfo.objects.all(),
-            ItemTable.objects.all(),
-            ItemTableItemInfo.objects.all(),
             Monster.objects.all(),
             shops(),
+            ShopStockInfo.objects.all(),
             Recipe.objects.all(),
             RecipeIngredientInfo.objects.all(),
             RecipeProductInfo.objects.all()

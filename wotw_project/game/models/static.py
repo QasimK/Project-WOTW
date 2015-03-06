@@ -139,38 +139,6 @@ class ItemItemActionInfo(models.Model):
     natural_key.dependencies = ['game.Item', 'game.ItemAction']
 
 
-class ItemTable(models.Model):
-    '''A basic collection of items with associated quantities'''
-    objects = ItemTableManager()
-    
-    #Name is used entirely to act as a natural key
-    name = models.CharField(max_length=80, unique=True)
-    items = models.ManyToManyField(Item, through='ItemTableItemInfo')
-    
-    def natural_key(self):
-        return (self.name,)
-    
-    def __str__(self):
-        return self.name
-
-
-class ItemTableItemInfo(models.Model):
-    '''Item tables link to items with associated quantities'''
-    objects = ItemTableItemInfoManager()
-    
-    item_table = models.ForeignKey(ItemTable)
-    item = models.ForeignKey(Item)
-    quantity = models.PositiveIntegerField(blank=True, null=True) #null=infinite
-    
-    def natural_key(self):
-        return (self.item_table.natural_key(), self.item.natural_key())
-    natural_key.dependencies = ['game.ItemTable', 'game.Item']
-    
-    def __str__(self):
-        q = 'Infinite' if self.quantity is None else self.quantity
-        return '{}:{} ({})'.format(self.item_table, self.item, q)
-
-
 class Monster(models.Model):
     '''Monsters have a unique name'''
     objects = MonsterManager()
@@ -199,7 +167,7 @@ class Shop(models.Model):
     objects = ShopManager()
     
     name = models.CharField(max_length=100, unique=True)
-    item_table = models.ForeignKey(ItemTable)
+    stock = models.ManyToManyField(Item, through='ShopStockInfo')
     inventory = models.ForeignKey('Inventory', null=True, blank=True)
     
     def natural_key(self):
@@ -207,6 +175,25 @@ class Shop(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class ShopStockInfo(models.Model):
+    '''Specify the items that the shop stocks (and the initial stock)'''
+    shop = models.ForeignKey(Shop)
+    item = models.ForeignKey(Item)
+    #Null would mean infinite:
+    initial_stock = models.PositiveIntegerField(blank=True, null=True,
+                                                default=0)
+    
+    class Meta:
+        unique_together = ('shop', 'item')
+    
+    def natural_key(self):
+        return (self.shop.natural_key(), self.item.natural_key())
+    
+    def __str__(self):
+        s = '{}: {} ({})'.format(self.shop, self.item, self.initial_stock)
+        return s
 
 
 class Recipe(models.Model):

@@ -21,24 +21,24 @@ class ItemItemActionManager(models.Manager):
         return self.get(item=Item.objects.get_by_natural_key(*item),
                         item_action=item_action_obj)
 
-class ItemTableManager(models.Manager):
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
-
-class ItemTableItemInfoManager(models.Manager):
-    def get_by_natural_key(self, item_table, item):
-        from game.models import ItemTable, Item
-        item_table_obj = ItemTable.objects.get_by_natural_key(*item_table)
-        item_obj = Item.objects.get_by_natural_key(*item)
-        return self.get(item_table=item_table_obj, item=item_obj)
 
 class MonsterManager(models.Manager):
     def get_by_natural_key(self, name):
         return self.get(name=name)
 
+
 class ShopManager(models.Manager):
     def get_by_natural_key(self, name):
         return self.get(name=name)
+
+
+class ShopStockInfoManager(models.Manager):
+    def get_by_natural_key(self, shop, item):
+        from game.models import Shop, Item
+        shop_obj = Shop.objects.get_by_natural_key(*shop)
+        item_obj = Item.objects.get_by_natural_key(*item)
+        return self.get(shop=shop_obj, item=item_obj)
+
 
 class RecipeManager(models.Manager):
     def get_by_natural_key(self, name):

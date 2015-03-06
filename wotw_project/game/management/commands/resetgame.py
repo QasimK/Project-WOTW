@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import models as models_auth
 
-from game.models.static import Shop, ItemTableItemInfo
+from game.models.static import Shop
 from game.models.dynamic import Character, Inventory
 
 class Command(BaseCommand):
@@ -31,10 +31,9 @@ class Command(BaseCommand):
         for shop in Shop.objects.all():
             inventory = Inventory.objects.create()
             
-            itiis = ItemTableItemInfo.objects.filter(item_table=shop.item_table)
-            for itemtableiteminfo in itiis:
-                item = itemtableiteminfo.item
-                quantity = itemtableiteminfo.quantity
+            for ssi in shop.shopstockinfo_set.all():
+                item = ssi.item
+                quantity = ssi.initial_stock
                 inventory.add_item(item, quantity)
             
             shop.inventory = inventory

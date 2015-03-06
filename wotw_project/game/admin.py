@@ -60,6 +60,29 @@ class MonsterAdmin(admin.ModelAdmin):
     list_display = ('name', 'hp', wepinfo, arminfo, 'gold')
 
 
+@admin.register(Shop)
+class ShopAdmin(admin.ModelAdmin):
+    class ItemInline(admin.TabularInline):
+        model = Shop.stock.through
+        extra = 0
+    
+    search_fields = ('name', 'shopstockinfo__item__name')
+    list_display = ('name', 'get_stock', 'inventory_link')
+    
+    exclude = ('inventory',)
+    readonly_fields = ('inventory_link',)
+    inlines = [ItemInline]
+    
+    def get_stock(self, shop):
+        return ', '.join([str(s) for s in shop.stock.all()])
+    get_stock.short_description = 'Stock items'
+
+    def inventory_link(self, shop):
+        link = reverse('admin:game_inventory_change', args=(shop.inventory.id,))
+        return '<a href="{}">{}</a>'.format(link, shop.inventory)
+    inventory_link.allow_tags = True
+
+
 class ShopInline(admin.StackedInline):
     model = Shop
     fields = ('name',)
@@ -96,43 +119,31 @@ class InventoryAdmin(admin.ModelAdmin):
     inlines = [ShopInline, CharInline, InventoryItemInfoInline]
 
 
-def inventory_link(shop):
-    link = reverse('admin:game_inventory_change', args=(shop.inventory.id,))
-    return '<a href="{}">{}</a>'.format(link, shop.inventory)
-inventory_link.allow_tags = True
-inventory_link.short_description = 'Inventory'
-
-@admin.register(Shop)
-class ShopAdmin(admin.ModelAdmin):
-    search_fields = ('name',)
-    list_display = ('name', 'item_table', inventory_link)    
-
-
 @admin.register(GameViewProperty)
 class GameViewPropertyAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'char', 'name', 'value')
 
 
-def get_recipe_ingredients(recipe):
-    return ', '.join(recipe.ingredients.values_list('name', flat=True))
-get_recipe_ingredients.short_description = 'Ingredients'
-
-def get_recipe_products(recipe):
-    return ', '.join(recipe.products.values_list('name', flat=True))
-get_recipe_products.short_description = 'Products'
-
-class RecipeIngredientInfoInline(admin.TabularInline):
-    model = RecipeIngredientInfo
-    extra = 0
-
-class RecipeProductInfoInline(admin.TabularInline):
-    model = RecipeProductInfo
-    extra = 0
-
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', get_recipe_products, get_recipe_ingredients)
+    class RecipeIngredientInfoInline(admin.TabularInline):
+        model = RecipeIngredientInfo
+        extra = 0
+    
+    class RecipeProductInfoInline(admin.TabularInline):
+        model = RecipeProductInfo
+        extra = 0
+    
+    list_display = ('name', 'get_recipe_products', 'get_recipe_ingredients')
     inlines = (RecipeIngredientInfoInline, RecipeProductInfoInline)
+    
+    def get_recipe_ingredients(self, recipe):
+        return ', '.join(recipe.ingredients.values_list('name', flat=True))
+    get_recipe_ingredients.short_description = 'Ingredients'
+    
+    def get_recipe_products(self, recipe):
+        return ', '.join(recipe.products.values_list('name', flat=True))
+    get_recipe_products.short_description = 'Products'
 
 
 def get_goto_locations(location):
@@ -150,6 +161,4 @@ admin.site.register(Character)
 admin.site.register(ActiveMonster)
 #admin.site.register(ItemProperty)
 admin.site.register(ItemAction)
-admin.site.register(ItemTable)
-admin.site.register(ItemTableItemInfo)
 #admin.site.register(InventoryItemInfo)
