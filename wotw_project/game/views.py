@@ -152,8 +152,10 @@ def allowed_exit_views(*views):
     
     return wrap_func
 
-    
 
+#---Global Views
+
+@login_required
 def char_inventory(request):
     char = get_char(request)
     if char.inventory_mode in (models.Character.INV_FULL_ACCESS,
@@ -165,7 +167,8 @@ def char_inventory(request):
     else:
         return render(request, "game/generic/inventory.html")
 
-#---Global Views
+
+@login_required
 def crafting(request):
     char = get_char(request)
     if char.inventory_mode in (char.INV_FULL_ACCESS, char.INV_VIEW_ONLY):
@@ -214,6 +217,7 @@ def crafting(request):
             return ret
         else:
             return redirect(game_error)
+
 
 #---Game Views
 
@@ -408,7 +412,6 @@ def game_action_resolver(request):
         return redir
     
     #Get action
-    char = get_char(request)
     try:
         the_action = registered_actions[action_name]
     except KeyError:
