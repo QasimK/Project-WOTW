@@ -1,6 +1,6 @@
 {% extends "game/game_base.html" %}
 
-{#
+{% comment %}
 Takes known_recipes:
 	[ (recipe, ingredients_list, products_list, can make?), ... ]
 where ingredients_list:
@@ -9,7 +9,7 @@ and products_list:
 	[ (product, quantity), ... ]
 	
 Takes making_allowed: True/False depending on whether you can make any potions
-#}
+{% endcomment %}
 
 {% block page_content %}
 	{% if char.inventory_mode == char.INV_FULL_ACCESS %}
