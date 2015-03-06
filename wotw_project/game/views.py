@@ -3,6 +3,7 @@ from functools import wraps
 from django.shortcuts import render, render_to_response, redirect
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 import game.models as models
 import game.actions as a
@@ -52,7 +53,7 @@ def create_error(char, err, level=0):
     
     models.Message.objects.create(character=char, body=err)
     if level >= 5:
-        return redirect(game_error)
+        return redirect('game:error')
 
 
 #Decorator
@@ -216,7 +217,7 @@ def crafting(request):
         if ret:
             return ret
         else:
-            return redirect(game_error)
+            return redirect('game:error')
 
 
 #---Game Views
@@ -362,7 +363,7 @@ Note all game a must:
 If there are errors then:
     - Return redirect(...)
     (Do things to handle error as you see fit.
-    eg. return redirect(game_error) or you may return None still)
+    eg. return redirect('game:error') or you may return None still)
 """
 
 @login_required
@@ -377,7 +378,7 @@ def game_action_resolver(request):
         """Temporary function to indicate the game action is not implemented."""
         msg = "This action (%s) is not implemented"%action_name
         models.Message.objects.create(character=char, body=msg)
-        return redirect(game_error)
+        return redirect('game:error')
     
     registered_actions = {
         "generic-purchase-item": a.generic_shop_purchase,
@@ -418,17 +419,17 @@ def game_action_resolver(request):
         #Need to display error somehow, temporary:
         err="Unknown game-action: '{}'".format(action_name)
         models.Message.objects.create(character=char, body=err)
-        return redirect(game_error)
+        return redirect('game:error')
     
     #Do action
     try:
         ret = the_action(char, request.POST)
     except ActionError as error:
         models.Message.objects.create(character=char, body=str(error))
-        return redirect(game_error)
+        return redirect('game:error')
     
     if ret is None:
-        return redirect(game_view_resolver)
+        return redirect('game:index')
     else:
         return ret
 
@@ -499,7 +500,7 @@ def a_crafting_make(char, post):
             msg = msg.format(products_list, ingredients_list)
             create_msg(char, msg)
     
-    return redirect(crafting)
+    return redirect('game:crafting')
 
 
 
@@ -536,4 +537,4 @@ def game_error(request):
         return render_to_response("game/error.html", data,
                                   context_instance=RequestContext(request))
     else:
-        return redirect(introduction)
+        return redirect('game:index')

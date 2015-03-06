@@ -1,5 +1,4 @@
 {% comment %}
-Takes (optionally) start_form
 Takes (optionally) login_form
 {% endcomment %}
 
@@ -20,19 +19,16 @@ Takes (optionally) login_form
 		</p>
 	</header>
 	
-	{% if start_form %}
+	{% if not user.is_authenticated %}
 		<section>
-			<h2>Register</h2>
-			<p>If you do not have an account you can register here</p>
-			<form action="/" method="POST">
-				{% csrf_token %}
-				<p>
-					{{ registration_form }}
-				</p>
-				<p>
-					<input type="submit" value="Register" />
-				</p>
-			</form>
+			<h2>Start Playing</h2>
+			<p>
+				You can
+				<a href="{% url 'start_game' %}">
+					start playing right now
+				</a>
+				and make an account to save your character.
+			</p>
 		</section>
 	{% endif %}
 	
@@ -52,7 +48,7 @@ Takes (optionally) login_form
 		<section>
 		<h2>Continue playing ({{ user }})</h2>
 		<p>
-			<a href="">Continue playing</a> or perhaps
+			<a href="{% url 'game:index' %}">Continue playing</a> or perhaps
 			<a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>.
 		</p>
 	{% endif %}

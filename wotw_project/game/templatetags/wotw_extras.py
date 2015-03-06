@@ -7,8 +7,6 @@ from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 from django.template.base import VariableDoesNotExist
 
-from game.views import game_action_resolver
-
 register = template.Library()
 
 def get_str(tag, tokenstr):
@@ -113,7 +111,7 @@ class ActionLinkNode2(template.Node):
         context.render_context["action_link_count"] += 1
         
         form_name = "formlink_"+str(context.render_context["action_link_count"])
-        form_action = reverse(game_action_resolver)
+        form_action = reverse('game:action')
         
         #CSRF-TOKEN Taken from django.template.defaulttags.CsrfTokenNode
         csrf_token = context.get('csrf_token', None)

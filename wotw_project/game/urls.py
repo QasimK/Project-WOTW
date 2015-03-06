@@ -1,24 +1,20 @@
-from django.conf.urls import patterns
+from django.conf.urls import patterns, url
 
 from game.views import (
     game_view_resolver, game_action_resolver,
     char_inventory, crafting,
-    introduction, game_error, delete_message
+    game_error, delete_message
 )
 
 urlpatterns = patterns('',
-    (r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
-)
-
-urlpatterns += patterns('',
-    (r'^game_view$', game_view_resolver),
-    (r'^game_action$', game_action_resolver),
+    url(r'^$', game_view_resolver, name='index'),
+    url(r'^game_action$', game_action_resolver, name='action'),
     
-    (r'^inventory/$', char_inventory),
-    (r'^crafting/$', crafting),
+    url(r'^inventory/$', char_inventory, name='inventory'),
+    url(r'^crafting/$', crafting, name='crafting'),
     
     #Other
-    (r'^$', introduction),
-    (r'^error/$', game_error),
-    (r'^delete_message/(?P<msg_num>\d+)/$', delete_message),
+    url(r'^error/$', game_error, name='error'),
+    url(r'^delete_message/(?P<msg_num>\d+)/$', delete_message,
+        name='delete_message'),
 )
