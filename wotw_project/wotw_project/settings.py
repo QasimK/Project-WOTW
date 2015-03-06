@@ -40,9 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.staticfiles',
     #3rd party
-    'debug_toolbar',
+    #'debug_toolbar',
     #Project WOTW
-    'main_website',
     'game'
 )
 
@@ -119,5 +118,5 @@ STATIC_URL = '/static/'
 
 # Login
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/game/"
