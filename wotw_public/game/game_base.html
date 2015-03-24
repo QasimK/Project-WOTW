@@ -9,7 +9,16 @@
 	<div id="container">
 		<h1>WOTW</h1>
 		<section style="position: fixed; left: 50%; top: 50px; margin-left: 30px; padding: 5px; border: 1px dashed black;">
-			<a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+			
+			<p><a href="{% url 'index' %}">
+				{% if is_account_saved %} {# Password has been set #}
+					Manage account
+				{% else %}
+					Save account
+				{% endif %}
+			</a></p>
+			
+			<p><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></p>
 			<section>
 				<h2>You and the world</h2>
 				<ul>

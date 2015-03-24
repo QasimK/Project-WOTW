@@ -11,7 +11,7 @@ template.add_to_builtins('game.templatetags.wotw_extras')
 
 urlpatterns = patterns('',
     url(r'^$', views.main_page, name='index'),
-    url(r'^start/$', views.start_game, name='start_game'),
+    url(r'^start/$', views.start_game, name='start-game'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     
     url(r'^game/', include(game_urls, namespace='game', app_name='game')),

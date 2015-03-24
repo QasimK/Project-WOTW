@@ -1,5 +1,8 @@
 {% comment %}
 Takes (optionally) login_form
+Takes (optionally) set_password_form
+Takes (optionally) password_change_msg
+Takes (optionally) is_account_saved
 {% endcomment %}
 
 <!doctype html>
@@ -12,46 +15,68 @@ Takes (optionally) login_form
     <title>{% block title %}WOTW{% endblock %}</title>
   </head>
   <body>
-  	<header>
-		<h1>WOTW</h1>
-		<p>
-			<a href="{% url "admin:index" %}">Admin site</a>
-		</p>
-	</header>
-	
-	{% if not user.is_authenticated %}
-		<section>
-			<h2>Start Playing</h2>
-			<p>
-				You can
-				<a href="{% url 'start_game' %}">
-					start playing right now
-				</a>
-				and make an account to save your character.
-			</p>
-		</section>
-	{% endif %}
-	
-	{% if login_form %}
-		<section>
-			<h2>Login</h2>
-			
-			<form action="/" method="POST">
-				{% csrf_token %}
-				{{ login_form.as_p }}
-				<input type="submit" value="Login" />
-			</form>
-		</section>
-	{% endif %}
-	
-	{% if user.is_authenticated %}
-		<section>
-		<h2>Continue playing ({{ user }})</h2>
-		<p>
-			<a href="{% url 'game:index' %}">Continue playing</a> or perhaps
-			<a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>.
-		</p>
-	{% endif %}
-	
+    <header>
+    <h1>WOTW</h1>
+    <p>
+      <a href="{% url "admin:index" %}">Admin site</a>
+    </p>
+  </header>
+  
+  {% if not user.is_authenticated %}
+    <section>
+      <h2>Start Playing</h2>
+      <p>
+        You can
+        <a href="{% url 'start-game' %}">
+          start playing right now</a>
+        and make an account to save your character later.
+      </p>
+    </section>
+  {% endif %}
+  
+  {% if login_form %}
+    <section>
+      <h2>Login</h2>
+      
+      <form action="/" method="POST">
+        {% csrf_token %}
+        {{ login_form.as_p }}
+        <input type="submit" value="Login" />
+      </form>
+    </section>
+  {% endif %}
+  
+  {% if user.is_authenticated %}
+    <section>
+      <h2>Continue playing ({{ user }})</h2>
+      <p>
+        <a href="{% url 'game:index' %}">Continue playing</a> or perhaps
+        <a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>.
+      </p>
+    </section>
+  {% endif %}
+  
+  {% if set_password_form %}
+    <section>
+      <h2>
+        {% if is_account_saved %}
+          Change password
+        {% else %}
+          Save your account
+        {% endif %}
+      </h2>
+      
+      {% if password_change_msg %}
+        <p>{{ password_change_msg }}</p>
+      {% endif %}
+      
+      <form action="/" method="POST">
+        {% csrf_token %}
+        {{ set_password_form.as_p }}
+        <input type="submit" value="Change Password" />
+      </form>
+    </section>
+  {% endif %}
+  
   </body>
 </html>
